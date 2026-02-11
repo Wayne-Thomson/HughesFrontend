@@ -10,26 +10,26 @@ const HomePage = () => {
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    // Get list of notes from backend
-    const fetchNotes = async () => {
-      try {
-        const res = await axios.get('http://localhost:3000/api/notes');
-        console.log("Notes fetched:", res.data);
-        setNotes(res.data || []);
-        setRateLimited(false);
-      } catch (error) {
-        console.log("Error fetching notes:", error);
-        if (error.response && error.response.status === 429) {
-          setRateLimited(true);
-        }
-        toast.error('Error fetching notes');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchNotes();
-  }, []);
+  // useEffect(() => {
+  //   // Get list of notes from backend
+  //   const fetchNotes = async () => {
+  //     try {
+  //       const res = await axios.get('http://localhost:3000/api/notes');
+  //       console.log("Notes fetched:", res.data);
+  //       setNotes(res.data || []);
+  //       setRateLimited(false);
+  //     } catch (error) {
+  //       console.log("Error fetching notes:", error);
+  //       if (error.response && error.response.status === 429) {
+  //         setRateLimited(true);
+  //       }
+  //       toast.error('Error fetching notes');
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+  //   fetchNotes();
+  // }, []);
   
   return (
     <div className='min-h-screen'>
