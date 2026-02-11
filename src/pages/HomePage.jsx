@@ -34,7 +34,8 @@ const HomePage = () => {
   const handleCreateNewItem = async () => {
     try {
       const newNote = { title: 'New Note', content: 'This is a new note.' };
-      const res = await axios.post('https://hughes-backend.vercel.app/api/notes', newNote);
+      // const res = await axios.post('https://hughes-backend.vercel.app/api/notes', newNote);
+      const res = await axios.post('http://localhost:3000/api/notes', newNote);
       // setNotes(prevNotes => [res.data, ...prevNotes]);
       toast.success('Note created successfully');
     } catch (error) {
