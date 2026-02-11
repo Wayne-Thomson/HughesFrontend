@@ -30,11 +30,23 @@ const HomePage = () => {
     };
     fetchNotes();
   }, []);
+
+  const handleCreateNewItem = async () => {
+    try {
+      const newNote = { title: 'New Note', content: 'This is a new note.' };
+      const res = await axios.post('https://hughes-backend.vercel.app/api/notes', newNote);
+      // setNotes(prevNotes => [res.data, ...prevNotes]);
+      toast.success('Note created successfully');
+    } catch (error) {
+      console.log("Error creating note:", error);
+      toast.error('Error creating note');
+    }
+  };
   
   return (
     <div className='min-h-screen'>
       <StandardNavBar />
-
+      <button onClick={() => handleCreateNewItem()} >Create New Item</button>
         
         <div className="max-w-7xl mx-auto p-4 mt-6">
           {
