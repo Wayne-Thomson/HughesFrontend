@@ -8,7 +8,8 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
     model,
     manufactureDate,
     enginePower,
-    fuelType
+    fuelType,
+    dateRemoved
   } = vehicle
 
   const year = manufactureDate?.split('-')[0]
@@ -44,7 +45,7 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
   return (
     <li className="bg-white border border-gray-200 rounded-lg p-5 hover:shadow-lg transition-shadow duration-200">
       {/* Header with Registration and Date Stock */}
-      <div className="flex justify-between items-start mb-4">
+      <div className="flex justify-between items-start mb-4 gap-4">
         <div>
           <div className="bg-yellow-300 border-2 border-yellow-400 px-3 py-1 rounded inline-block mb-2">
             <h3 className="text-lg font-bold text-gray-700 font-mono tracking-wider">{registration}</h3>
@@ -53,9 +54,16 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
             {make} {model}
           </p>
         </div>
-        <span className="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded">
-          Date Added: {formatDate(dateAdded)}
-        </span>
+        <div className="flex flex-col gap-2">
+          <span className="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded">
+            Date Added: {formatDate(dateAdded)}
+          </span>
+          {dateRemoved && (
+            <span className="inline-block bg-red-100 text-red-800 text-xs font-semibold px-3 py-1 rounded">
+              Date Removed: {formatDate(dateRemoved)}
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Vehicle Details Grid */}
