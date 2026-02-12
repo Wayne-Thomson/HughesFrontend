@@ -11,38 +11,48 @@ const VehicleListPage = () => {
     const [ rateLimited, setRateLimited ] = React.useState(false);
     const [ vehicles, setVehicles ] = React.useState([]);
 
-    // React.useEffect(() => {
-    //     // Get list of vehicles from backend
-    //     const fetchVehicles = async () => {
-    //         try {
-    //             const res = await axios.get('https://hughes-backend.vercel.app/api/vehicles/listall');
-    //             console.log("Vehicles fetched:", res.data);
-    //             setVehicles(res.data || []);
-    //             setRateLimited(false);
-    //         } catch (error) {
-    //             console.log("Error fetching vehicles:", error);
-    //             if (error.response && error.response.status === 429) {
-    //                 setRateLimited(true);
-    //             }
-    //             toast.error('Error fetching vehicles');
-    //         } finally {
-    //             setLoading(false);
-    //         }
-    //     };
-    //     fetchVehicles();
-    // }, []);
+    React.useEffect(() => {
+        // Get list of vehicles from backend
+        const fetchVehicles = async () => {
+            try {
+                // Request the list of vehicles from the backend API endpoint and update state with the response data
+                const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/vehicle/listall`);
+                // Log the fetched vehicles to the console for debugging and set the vehicles state variable with the response data, or an empty array if no data is returned
+                console.log("Vehicles fetched:", res.data);
+                setVehicles(res.data || []);
+
+                // If the request is successful, reset the rateLimited state to false in case it was previously set to true due to a 429 error
+                setRateLimited(false);
+            } catch (error) {
+                // Log any errors that occur during the fetch to the console for debugging
+                console.log("Error fetching vehicles:", error);
+                // If the error response status is 429, it means the user has hit the rate limit, so we set the rateLimited state to true to show the appropriate UI
+                if (error.response && error.response.status === 429) {
+                    setRateLimited(true);
+                }
+                // Show an error toast notification to the user indicating that there was an error fetching the vehicles
+                toast.error('Error fetching vehicles');
+            } finally {
+                // In the finally block, we set loading to false to indicate that the fetch operation has completed, regardless of whether it was successful or resulted in an error
+                setLoading(false);
+            }
+        };
+        // Call the fetchVehicles function to initiate the API request when the component mounts
+        fetchVehicles();
+    }, []);
 
     const handleCreateVehicleTest = async () => {
         try {
             // Create a new vehicle using the createVehicleREG controller function with a test registration number
             const res= await axios.post(`${import.meta.env.VITE_BASE_URL}/api/vehicle/createvehiclereg/EK11YTH`);
-            // const res = await axios.post('http://localhost:3000/api/vehicle/createvehiclereg/EK11YTH');
             // Spread the new note into the existing notes array to update state and trigger re-render
-            // setVehicles(prevVehicles => [res.data, ...prevVehicles]);
+            setVehicles(prevVehicles => [res?.data, ...prevVehicles]);
+            // Show success toast notification to user
             toast.success('Vehicle created successfully');
         } catch (error) {
+            // Log the error to the console for debugging
             console.log("Error creating vehicle:", error);
-        }
+        };
     };
 
   return (
