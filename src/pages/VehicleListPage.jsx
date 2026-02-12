@@ -11,26 +11,26 @@ const VehicleListPage = () => {
     const [ rateLimited, setRateLimited ] = React.useState(false);
     const [ vehicles, setVehicles ] = React.useState([]);
 
-    React.useEffect(() => {
-        // Get list of vehicles from backend
-        const fetchVehicles = async () => {
-            try {
-                const res = await axios.get('https://hughes-backend.vercel.app/api/vehicles/listall');
-                console.log("Vehicles fetched:", res.data);
-                setVehicles(res.data || []);
-                setRateLimited(false);
-            } catch (error) {
-                console.log("Error fetching vehicles:", error);
-                if (error.response && error.response.status === 429) {
-                    setRateLimited(true);
-                }
-                toast.error('Error fetching vehicles');
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchVehicles();
-    }, []);
+    // React.useEffect(() => {
+    //     // Get list of vehicles from backend
+    //     const fetchVehicles = async () => {
+    //         try {
+    //             const res = await axios.get('https://hughes-backend.vercel.app/api/vehicles/listall');
+    //             console.log("Vehicles fetched:", res.data);
+    //             setVehicles(res.data || []);
+    //             setRateLimited(false);
+    //         } catch (error) {
+    //             console.log("Error fetching vehicles:", error);
+    //             if (error.response && error.response.status === 429) {
+    //                 setRateLimited(true);
+    //             }
+    //             toast.error('Error fetching vehicles');
+    //         } finally {
+    //             setLoading(false);
+    //         }
+    //     };
+    //     fetchVehicles();
+    // }, []);
 
     const handleCreateVehicleTest = async () => {
         try {
