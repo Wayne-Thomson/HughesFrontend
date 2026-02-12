@@ -1,15 +1,17 @@
 import React from 'react'
-import StandardNavBar from '../components/StandardNavBar'
-import RateLimitedUI from '../components/RateLimitedUI'
+import StandardNavBar from '../components/StandardNavBar.jsx';
+import RateLimitedUI from '../components/RateLimitedUI.jsx';
+import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const VehicleListPage = () => {
     const [ loading, setLoading ] = React.useState(false);
     const [ rateLimited, setRateLimited ] = React.useState(false);
     const [ vehicles, setVehicles ] = React.useState([]);
 
-    useEffect(() => {
-        // Get list of notes from backend
-        const fetchNotes = async () => {
+    React.useEffect(() => {
+        // Get list of vehicles from backend
+        const fetchVehicles = async () => {
             try {
                 const res = await axios.get('https://hughes-backend.vercel.app/api/vehicles/listall');
                 console.log("Vehicles fetched:", res.data);
@@ -25,19 +27,18 @@ const VehicleListPage = () => {
                 setLoading(false);
             }
         };
-            fetchNotes();
+        fetchVehicles();
     }, []);
 
     const handleCreateVehicleTest = async () => {
         try {
-            const newNote = { title: 'New Note', content: 'This is a new note.' };
-            // const res = await axios.post('https://hughes-backend.vercel.app/api/notes', newNote);
-            const res = await axios.post('http://localhost:3000/api/notes', newNote);
-            // setNotes(prevNotes => [res.data, ...prevNotes]);
-            toast.success('Note created successfully');
+            // Create a new vehicle using the createVehicleREG controller function with a test registration number
+            const res = await axios.post('http://localhost:3000/api/vehicle/createvehiclereg/123456789');
+            // Spread the new note into the existing notes array to update state and trigger re-render
+            // setVehicles(prevVehicles => [res.data, ...prevVehicles]);
+            toast.success('Vehicle created successfully');
         } catch (error) {
-            console.log("Error creating note:", error);
-            toast.error('Error creating note');
+            console.log("Error creating vehicle:", error);
         }
     };
 
