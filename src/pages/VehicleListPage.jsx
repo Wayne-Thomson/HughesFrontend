@@ -8,9 +8,12 @@ import VehicleCard from '../components/VehicleCard.jsx';
 console.log(import.meta.env.VITE_ACCESS_KEY);
 
 const VehicleListPage = () => {
-    const [ loading, setLoading ] = React.useState(false);
+    const [ loading, setLoading ] = React.useState(true);
     const [ rateLimited, setRateLimited ] = React.useState(false);
     const [ vehicles, setVehicles ] = React.useState([]);
+    const [ searchTerm, setSearchTerm ] = React.useState('');
+    const [ selectedMake, setSelectedMake ] = React.useState('');
+    const [ orderBy, setOrderBy ] = React.useState('dateAdded');
 
     React.useEffect(() => {
         // Get list of vehicles from backend
@@ -43,6 +46,7 @@ const VehicleListPage = () => {
     }, []);
 
     const handleCreateVehicleTest = async () => {
+        setLoading(true);
         try {
             // Create a new vehicle using the createVehicleREG controller function with a test registration number
             const res= await axios.post(`${import.meta.env.VITE_BASE_URL}/api/vehicle/createvehiclereg/EK11YTH`);
@@ -55,7 +59,9 @@ const VehicleListPage = () => {
         } catch (error) {
             // Log the error to the console for debugging
             console.log("Error creating vehicle:", error);
+            toast.error('Error creating vehicle');
         };
+        setLoading(false);
     };
 
   return (
@@ -63,21 +69,78 @@ const VehicleListPage = () => {
       <StandardNavBar />
       <button onClick={() => handleCreateVehicleTest()} >Create New Item</button>
         
-        <div className="max-w-7xl mx-auto p-4 mt-6">
-          {
-          loading && 
-          <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+      {/* Filter Bar */}
+      <div className="py-4">
+        <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+          {/* Search */}
+          <div>
+            <label htmlFor="search" className="block text-sm font-medium text-gray-400 mb-1">
+              Search
+            </label>
+            <input
+              id="search"
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              placeholder="Search vehicles..."
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+            />
           </div>
-          }
-          {(vehicles.length > 0) && (!rateLimited) && (!loading) && (
-            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
-              {vehicles.map(vehicle => (
-                <VehicleCard key={vehicle._id} vehicle={vehicle} />
-              ))}
-            </div>
-          )}
+
+          {/* Vehicle Make */}
+          <div>
+            <label htmlFor="make" className="block text-sm font-medium text-gray-400 mb-1">
+              Vehicle Make
+            </label>
+            <select
+              id="make"
+              value={selectedMake}
+              onChange={(e) => setSelectedMake(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition bg-white cursor-pointer text-gray-900"
+            >
+              <option value="">All Makes</option>
+            </select>
+          </div>
+
+          {/* Order By */}
+          <div>
+            <label htmlFor="orderby" className="block text-sm font-medium text-gray-400 mb-1">
+              Order By:
+            </label>
+            <select
+              id="orderby"
+              value={orderBy}
+              onChange={(e) => setOrderBy(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition bg-white cursor-pointer text-gray-900"
+            >
+              <option value="dateAdded">Date Added</option>
+              <option value="year">Year</option>
+              <option value="make">Make</option>
+              <option value="registration">Registration</option>
+            </select>
+          </div>
         </div>
+      </div>
+      
+      {/* Semi-transparent overlay when loading */}
+      {loading && (
+        <>
+          <div className="fixed inset-0 bg-black bg-opacity-50 z-40 pointer-events-none"></div>
+          <div className="fixed inset-0 flex justify-center items-center z-50 pointer-events-none">
+            <div className="animate-spin rounded-full h-16 w-16 border-4 border-gray-300 border-t-indigo-600"></div>
+          </div>
+        </>
+      )}
+
+      <div className="max-w-7xl mx-auto p-4 mt-6">
+        {(vehicles.length > 0) && (!rateLimited) && (
+          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+            {vehicles.map(vehicle => (
+              <VehicleCard key={vehicle._id} vehicle={vehicle} />
+            ))}
+          </div>
+        )}
+      </div>
 
       {rateLimited && <RateLimitedUI />}
       

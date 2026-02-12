@@ -25,7 +25,7 @@ const VehicleCard = ({ vehicle }) => {
       <div className="flex justify-between items-start mb-4">
         <div>
           <div className="bg-yellow-300 border-2 border-yellow-400 px-3 py-1 rounded inline-block mb-2">
-            <h3 className="text-lg font-bold text-gray-900 font-mono tracking-wider">{registration}</h3>
+            <h3 className="text-lg font-bold text-gray-700 font-mono tracking-wider">{registration}</h3>
           </div>
           <p className="text-sm text-gray-600 mt-1">
             {make} {model}
