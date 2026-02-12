@@ -1,6 +1,6 @@
 import React from 'react'
 
-const VehicleCard = ({ vehicle }) => {
+const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor = 'red' }) => {
   const {
     dateAdded,
     registration,
@@ -17,6 +17,13 @@ const VehicleCard = ({ vehicle }) => {
       month: 'short',
       day: 'numeric'
     })
+  }
+
+  const colorClasses = {
+    red: 'bg-red-100 hover:bg-red-200 text-red-700',
+    green: 'bg-green-100 hover:bg-green-200 text-green-700',
+    yellow: 'bg-yellow-100 hover:bg-yellow-200 text-yellow-700',
+    blue: 'bg-blue-100 hover:bg-blue-200 text-blue-700'
   }
 
   return (
@@ -64,12 +71,12 @@ const VehicleCard = ({ vehicle }) => {
       </div>
 
       {/* Action Buttons */}
-    <button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 mb-2 px-4 rounded-lg transition-colors duration-200">
+      <button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 mb-2 px-4 rounded-lg transition-colors duration-200">
         View Details
       </button>
       <div className="flex gap-3">
-        <button className="flex-1 bg-red-100 hover:bg-red-200 text-red-700 font-medium py-2 px-4 rounded-lg transition-colors duration-200">
-          Delete
+        <button className={`flex-1 ${colorClasses[deleteButtonColor]} font-medium py-2 px-4 rounded-lg transition-colors duration-200`}>
+          {deleteButtonText}
         </button>
         <button className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200">
           View/Update Note

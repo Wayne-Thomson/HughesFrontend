@@ -14,6 +14,16 @@ const VehicleListPage = () => {
     const [ searchTerm, setSearchTerm ] = React.useState('');
     const [ selectedMake, setSelectedMake ] = React.useState('');
     const [ orderBy, setOrderBy ] = React.useState('dateAdded');
+    const [ isScrolled, setIsScrolled ] = React.useState(false);
+
+    React.useEffect(() => {
+        const handleScroll = () => {
+            setIsScrolled(window.scrollY > 100);
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
 
     React.useEffect(() => {
         // Get list of vehicles from backend
@@ -70,11 +80,11 @@ const VehicleListPage = () => {
       <button onClick={() => handleCreateVehicleTest()} >Create New Item</button>
         
       {/* Filter Bar */}
-      <div className="py-4">
+      <div className={`md:sticky md:top-16 md:z-20 py-4 transition-all ${isScrolled ? 'md:bg-black md:border-b md:border-gray-200 md:shadow-sm' : ''}`}>
         <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
           {/* Search */}
           <div>
-            <label htmlFor="search" className="block text-sm font-medium text-gray-400 mb-1">
+            <label htmlFor="search" className={`block text-sm font-medium text-gray-400 mb-1 transition-all ${isScrolled ? 'hidden md:block' : ''}`}>
               Search
             </label>
             <input

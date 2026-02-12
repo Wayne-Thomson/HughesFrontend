@@ -13,33 +13,44 @@ const StandardNavBar = () => {
   const closeMenu = () => setMobileMenuOpen(false)
 
   return (
-    <header className='bg-gray-200 border-b border-gray-300 shadow-md'>
+    <header className='sticky top-0 z-30 bg-gray-200 border-b border-gray-300 shadow-md'>
       <div className='mx-auto max-w-7xl px-4 py-4'>
         <div className="flex items-center justify-between">
           {/* Logo/Title */}
-          <Link to="/vehicles" className='flex items-center gap-2 group'>
-            <h1 className='text-2xl md:text-3xl font-bold text-gray-900 font-sans tracking-tight'>
-              Hughes <span className='text-gray-600'>Available Vehicles</span>
-            </h1>
-          </Link>
+          <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className='flex items-start md:items-center gap-1 md:gap-4 group hover:opacity-80 transition-opacity flex-col md:flex-row'>
+            <div>
+              <h1 className='text-2xl md:text-3xl font-bold text-gray-900 font-sans tracking-tight cursor-pointer'>
+                Hughes <span className='text-gray-600'>Available Vehicles</span>
+              </h1>
+            </div>
+            <span className='text-xs md:text-sm font-semibold text-indigo-600 bg-indigo-100 px-2 py-1 rounded whitespace-nowrap'>
+              {isOnVehicles ? 'Active Vehicles' : isOnDeleted ? 'Deleted Vehicles' : isOnUsers ? 'Users' : 'Home'}
+            </span>
+          </button>
 
           {/* Desktop Navigation */}
           <nav className='hidden md:flex items-center gap-4'>
-            {!isOnVehicles && (
-              <Link to="/vehicles" className="px-4 py-2 rounded-lg text-gray-700 border border-gray-300 hover:bg-gray-200 transition-colors">
-                Vehicles
-              </Link>
-            )}
-            {!isOnDeleted && (
-              <Link to="/deleted" className="px-4 py-2 rounded-lg text-gray-700 border border-gray-300 hover:bg-gray-200 transition-colors">
-                Deleted Vehicles
-              </Link>
-            )}
-            {!isOnUsers && (
-              <Link to="/users" className="px-4 py-2 rounded-lg text-gray-700 border border-gray-300 hover:bg-gray-200 transition-colors">
-                Users
-              </Link>
-            )}
+            <Link to="/vehicles" className={`px-4 py-2 rounded-lg border transition-colors ${
+              isOnVehicles 
+                ? 'bg-gray-400 text-gray-900 border-gray-400' 
+                : 'text-gray-700 border-gray-300 hover:bg-gray-300'
+            }`}>
+              Vehicles
+            </Link>
+            <Link to="/deleted" className={`px-4 py-2 rounded-lg border transition-colors ${
+              isOnDeleted 
+                ? 'bg-gray-400 text-gray-900 border-gray-400' 
+                : 'text-gray-700 border-gray-300 hover:bg-gray-300'
+            }`}>
+              Deleted Vehicles
+            </Link>
+            <Link to="/users" className={`px-4 py-2 rounded-lg border transition-colors ${
+              isOnUsers 
+                ? 'bg-gray-400 text-gray-900 border-gray-400' 
+                : 'text-gray-700 border-gray-300 hover:bg-gray-300'
+            }`}>
+              Users
+            </Link>
           </nav>
 
           {/* Right Side - Add Vehicle Button (desktop) and Mobile Menu */}
@@ -94,33 +105,39 @@ const StandardNavBar = () => {
 
               {/* Navigation Items */}
               <nav className='flex flex-col p-4 gap-3'>
-                {!isOnVehicles && (
-                  <Link 
-                    to="/vehicles" 
-                    onClick={closeMenu}
-                    className="px-4 py-3 rounded-lg text-gray-700 border border-gray-300 hover:bg-gray-200 transition-colors text-center"
-                  >
-                    Vehicles
-                  </Link>
-                )}
-                {!isOnDeleted && (
-                  <Link 
-                    to="/deleted" 
-                    onClick={closeMenu}
-                    className="px-4 py-3 rounded-lg text-gray-700 border border-gray-300 hover:bg-gray-200 transition-colors text-center"
-                  >
-                    Deleted Vehicles
-                  </Link>
-                )}
-                {!isOnUsers && (
-                  <Link 
-                    to="/users" 
-                    onClick={closeMenu}
-                    className="px-4 py-3 rounded-lg text-gray-700 border border-gray-300 hover:bg-gray-200 transition-colors text-center"
-                  >
-                    Users
-                  </Link>
-                )}
+                <Link 
+                  to="/vehicles" 
+                  onClick={closeMenu}
+                  className={`px-4 py-3 rounded-lg border transition-colors text-center ${
+                    isOnVehicles 
+                      ? 'bg-gray-400 text-gray-900 border-gray-400' 
+                      : 'text-gray-700 border-gray-300 hover:bg-gray-300'
+                  }`}
+                >
+                  Vehicles
+                </Link>
+                <Link 
+                  to="/deleted" 
+                  onClick={closeMenu}
+                  className={`px-4 py-3 rounded-lg border transition-colors text-center ${
+                    isOnDeleted 
+                      ? 'bg-gray-400 text-gray-900 border-gray-400' 
+                      : 'text-gray-700 border-gray-300 hover:bg-gray-300'
+                  }`}
+                >
+                  Deleted Vehicles
+                </Link>
+                <Link 
+                  to="/users" 
+                  onClick={closeMenu}
+                  className={`px-4 py-3 rounded-lg border transition-colors text-center ${
+                    isOnUsers 
+                      ? 'bg-gray-400 text-gray-900 border-gray-400' 
+                      : 'text-gray-700 border-gray-300 hover:bg-gray-300'
+                  }`}
+                >
+                  Users
+                </Link>
 
                 {/* Add Vehicle Button in Mobile Menu */}
                 {isOnVehicles && (
