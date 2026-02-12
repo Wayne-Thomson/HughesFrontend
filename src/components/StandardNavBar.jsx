@@ -35,7 +35,7 @@ const StandardNavBar = () => {
                 ? 'bg-gray-400 text-gray-900 border-gray-400' 
                 : 'text-gray-700 border-gray-300 hover:bg-gray-300'
             }`}>
-              Vehicles
+              Active Vehicles
             </Link>
             <Link to="/deleted" className={`px-4 py-2 rounded-lg border transition-colors ${
               isOnDeleted 
