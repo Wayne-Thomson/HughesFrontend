@@ -2,21 +2,36 @@ import React from 'react'
 
 const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor = 'red' }) => {
   const {
-    dateAdded,
+    createdAt: dateAdded,
     registration,
     make,
     model,
-    year,
+    manufactureDate,
     enginePower,
     fuelType
   } = vehicle
 
+  const year = manufactureDate?.split('-')[0]
+
   const formatDate = (date) => {
-    return new Date(date).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    })
+    const d = new Date(date)
+    const dayName = d.toLocaleDateString('en-US', { weekday: 'long' })
+    const dayNum = d.getDate()
+    const month = d.toLocaleDateString('en-US', { month: 'short' })
+    const year = d.getFullYear()
+    
+    // Get ordinal suffix (st, nd, rd, th)
+    const ordinal = (n) => {
+      if (n > 3 && n < 21) return 'th'
+      switch (n % 10) {
+        case 1: return 'st'
+        case 2: return 'nd'
+        case 3: return 'rd'
+        default: return 'th'
+      }
+    }
+    
+    return `${dayName}, ${dayNum}${ordinal(dayNum)} ${month} ${year}`
   }
 
   const colorClasses = {
@@ -39,7 +54,7 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
           </p>
         </div>
         <span className="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded">
-          {formatDate(dateAdded)}
+          Date Added: {formatDate(dateAdded)}
         </span>
       </div>
 
