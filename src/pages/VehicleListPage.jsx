@@ -4,6 +4,8 @@ import RateLimitedUI from '../components/RateLimitedUI.jsx';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
+console.log(import.meta.env.VITE_ACCESS_KEY);
+
 const VehicleListPage = () => {
     const [ loading, setLoading ] = React.useState(false);
     const [ rateLimited, setRateLimited ] = React.useState(false);
@@ -33,7 +35,8 @@ const VehicleListPage = () => {
     const handleCreateVehicleTest = async () => {
         try {
             // Create a new vehicle using the createVehicleREG controller function with a test registration number
-            const res = await axios.post('http://localhost:3000/api/vehicle/createvehiclereg/123456789');
+            const res= await axios.post(`${import.meta.env.VITE_BASE_URL}/api/vehicle/createvehiclereg/EK11YTH`);
+            // const res = await axios.post('http://localhost:3000/api/vehicle/createvehiclereg/EK11YTH');
             // Spread the new note into the existing notes array to update state and trigger re-render
             // setVehicles(prevVehicles => [res.data, ...prevVehicles]);
             toast.success('Vehicle created successfully');
