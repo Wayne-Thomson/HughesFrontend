@@ -65,18 +65,18 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
             setVehicles(vehicles.filter(v => v._id !== _id));
         } catch (error) {
             console.error('Error deleting vehicle:', error);
-            toast.error('Error loading vehicle details');
+            toast.error('Error deleting vehicle details');
         } finally {
             setLoading(false)
         }
     } else {
         try {
-            // const res = await axios.delete(`${import.meta.env.VITE_BASE_URL}/api/vehicle/delete/${_id}`, { data: { hardDelete: true } });
-            toast.success('Vehicle permanently deleted successfully')
+            const res = await axios.put(`${import.meta.env.VITE_BASE_URL}/api/vehicle/restore/${_id}`);
+            toast.success('Vehicle restored successfully')
             setVehicles(vehicles.filter(v => v._id !== _id));
         } catch (error) {
-            console.error('Error deleting vehicle:', error)
-            toast.error('Error loading vehicle details')
+            console.error('Error restoring vehicle:', error)
+            toast.error('Error restoring vehicle details')
         } finally {
             setLoading(false)
         }
@@ -101,7 +101,7 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
         setVehicles(vehicles.filter(v => v._id !== _id));
     } catch (error) {
         console.error('Error deleting vehicle:', error)
-        toast.error('Error loading vehicle details')
+        toast.error('Error deleting vehicle details')
     } finally {
         setLoading(false)
     };
@@ -225,7 +225,11 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
               </button>
               <button
                 onClick={handleConfirmDelete}
-                className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors"
+                className={`flex-1 px-4 py-2 font-medium rounded-lg transition-colors ${
+                  deleteButtonText === 'Restore'
+                    ? 'bg-green-600 hover:bg-green-700 text-white'
+                    : 'bg-red-600 hover:bg-red-700 text-white'
+                }`}
               >
                 Confirm
               </button>
