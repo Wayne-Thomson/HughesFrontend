@@ -56,6 +56,21 @@ const RemovedVehicleList = () => {
         .filter(make => make) // Remove any empty values
         .sort();
 
+    // Get count of vehicles for each make
+    const getCountForMake = (make) => {
+        return vehicles.filter(v => v.make === make).length;
+    };
+
+    // Filter vehicles based on selected make and search term
+    const filteredVehicles = vehicles.filter(vehicle => {
+        const matchesMake = selectedMake === '' || (vehicle.make && vehicle.make === selectedMake);
+        const matchesSearch = !searchTerm || 
+                            (vehicle.registration && vehicle.registration.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                            (vehicle.make && vehicle.make.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                            (vehicle.model && vehicle.model.toLowerCase().includes(searchTerm.toLowerCase()));
+        return matchesMake && matchesSearch;
+    });
+
   return (
     <div className='min-h-screen'>
       <StandardNavBar />        
@@ -90,7 +105,7 @@ const RemovedVehicleList = () => {
             >
               <option value="">All Makes</option>
               {uniqueMakes.map(make => (
-                <option key={make} value={make}>{make}</option>
+                <option key={make} value={make}>{make} ({getCountForMake(make)})</option>
               ))}
             </select>
           </div>
@@ -126,11 +141,16 @@ const RemovedVehicleList = () => {
       )}
 
       <div className="max-w-7xl mx-auto p-4 mt-6">
-        {(vehicles.length > 0) && (!rateLimited) && (
+        {(filteredVehicles.length > 0) && (!rateLimited) && (
           <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
-            {vehicles.map(vehicle => (
+            {filteredVehicles.map(vehicle => (
               <VehicleCard key={vehicle._id} vehicle={vehicle} deleteButtonText="Restore" deleteButtonColor="green" isDeleted={true} setLoading={setLoading} vehicles={vehicles} setVehicles={setVehicles} />
             ))}
+          </div>
+        )}
+        {(filteredVehicles.length === 0) && (vehicles.length > 0) && (!rateLimited) && (
+          <div className="text-center py-12">
+            <p className="text-gray-500 text-lg">No vehicles match your filters</p>
           </div>
         )}
       </div>
