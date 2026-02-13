@@ -1,6 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor = 'red' }) => {
+  const [showConfirmation, setShowConfirmation] = useState(false)
+  const [hardDeleteChecked, setHardDeleteChecked] = useState(false)
+
   const {
     createdAt: dateAdded,
     registration,
@@ -40,6 +43,27 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
     green: 'bg-green-100 hover:bg-green-200 text-green-700',
     yellow: 'bg-yellow-100 hover:bg-yellow-200 text-yellow-700',
     blue: 'bg-blue-100 hover:bg-blue-200 text-blue-700'
+  }
+
+  const handleDeleteClick = () => {
+    setShowConfirmation(true)
+  }
+
+  const handleConfirmDelete = () => {
+    if (deleteButtonText === 'Delete') {
+      console.log(`Deleting vehicle with registration: ${registration}`, { hardDelete: hardDeleteChecked })
+      // API call to delete the vehicle would go here.
+    } else {
+      console.log(`Restoring vehicle with registration: ${registration}`)
+      // API call to restore the vehicle would go here.
+    }
+    setShowConfirmation(false)
+    setHardDeleteChecked(false)
+  }
+
+  const handleCancelDelete = () => {
+    setShowConfirmation(false)
+    setHardDeleteChecked(false)
   }
 
   return (
@@ -98,13 +122,63 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
         View Details
       </button>
       <div className="flex gap-3">
-        <button className={`flex-1 ${colorClasses[deleteButtonColor]} font-medium py-2 px-4 rounded-lg transition-colors duration-200`}>
+        <button
+          onClick={handleDeleteClick}
+          className={`flex-1 ${colorClasses[deleteButtonColor]} font-medium py-2 px-4 rounded-lg transition-colors duration-200`}
+        >
           {deleteButtonText}
         </button>
         <button className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200">
           View/Update Note
         </button>
       </div>
+
+      {/* Confirmation Modal */}
+      {showConfirmation && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-xl p-6 max-w-sm mx-4">
+            <h3 className="text-lg font-bold text-gray-900 mb-4">
+              Confirm {deleteButtonText}
+            </h3>
+            <p className="text-gray-600 mb-4">
+              Are you sure you want to {deleteButtonText.toLowerCase()} this vehicle?
+            </p>
+            <p className="text-sm font-semibold text-gray-700 mb-2">{registration}</p>
+            <p className="text-sm text-gray-600 mb-6">
+              {make} {model}
+            </p>
+
+            {deleteButtonText === 'Delete' && (
+              <div className="mb-6 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                <label className="flex items-center gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={hardDeleteChecked}
+                    onChange={(e) => setHardDeleteChecked(e.target.checked)}
+                    className="w-4 h-4 text-red-600 rounded cursor-pointer"
+                  />
+                  <span className="text-sm font-medium text-gray-700">Hard Delete</span>
+                </label>
+              </div>
+            )}
+
+            <div className="flex gap-3">
+              <button
+                onClick={handleCancelDelete}
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmDelete}
+                className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </li>
   )
 }
