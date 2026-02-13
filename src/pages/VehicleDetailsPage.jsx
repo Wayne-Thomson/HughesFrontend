@@ -1,37 +1,7 @@
-import React, { useState, useEffect } from 'react'
-import { useParams } from 'react-router'
-import axios from 'axios'
-import StandardNavBar from '../components/StandardNavBar'
-import toast from 'react-hot-toast'
-
-const VehicleDetailsPage = () => {
-  const { id } = useParams()
-  const [vehicle, setVehicle] = useState(null)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    const fetchVehicle = async () => {
-      try {
-        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
-        const res = await axios.get(`${apiUrl}/vehicle/${id}`)
-        setVehicle(res.data.vehicle)
-      } catch (error) {
-        console.error('Error fetching vehicle:', error)
-        toast.error('Error loading vehicle details')
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    if (id) {
-      fetchVehicle()
-    }
-  }, [id])
-
+const VehicleDetailsPage = ({ vehicle, loading, setLoading }) => {
   if (loading) {
     return (
       <div className="min-h-screen">
-        <StandardNavBar />
         <div className="flex items-center justify-center h-screen">
           <div className="text-gray-600">Loading...</div>
         </div>
@@ -42,7 +12,6 @@ const VehicleDetailsPage = () => {
   if (!vehicle) {
     return (
       <div className="min-h-screen">
-        <StandardNavBar />
         <div className="flex items-center justify-center h-screen">
           <div className="text-gray-600">Vehicle not found</div>
         </div>
@@ -52,7 +21,6 @@ const VehicleDetailsPage = () => {
 
   return (
     <div className="min-h-screen">
-      <StandardNavBar />
       <div className="max-w-4xl mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-6">
           {vehicle.make} {vehicle.model}

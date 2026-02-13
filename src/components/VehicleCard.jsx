@@ -55,7 +55,8 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
 
   const handleConfirmDelete = async () => {
     setLoading(true);
-
+    setShowConfirmation(false)
+    setHardDeleteChecked(false)
     if (deleteButtonText === 'Delete') {
         try {
             console.log(`Deleting vehicle with registration: ${registration}, hardDelete: ${hardDeleteChecked}`);
@@ -79,11 +80,7 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
         } finally {
             setLoading(false)
         }
-
     };
-    setLoading(false);
-    setShowConfirmation(false)
-    setHardDeleteChecked(false)
   }
 
   const handleCancelDelete = () => {
