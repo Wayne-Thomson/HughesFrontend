@@ -51,6 +51,11 @@ const RemovedVehicleList = () => {
         fetchVehicles();
     }, []);
 
+    // Get unique makes and sort alphabetically
+    const uniqueMakes = Array.from(new Set(vehicles.map(v => v.make)))
+        .filter(make => make) // Remove any empty values
+        .sort();
+
   return (
     <div className='min-h-screen'>
       <StandardNavBar />        
@@ -84,6 +89,9 @@ const RemovedVehicleList = () => {
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition bg-white cursor-pointer text-gray-900"
             >
               <option value="">All Makes</option>
+              {uniqueMakes.map(make => (
+                <option key={make} value={make}>{make}</option>
+              ))}
             </select>
           </div>
 
