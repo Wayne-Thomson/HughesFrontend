@@ -8,7 +8,7 @@ import toast from 'react-hot-toast';
 const RemovedVehicleList = () => {
     const [rateLimited, setRateLimited] = React.useState(false);
     const [vehicles, setVehicles] = React.useState([]);
-    const [loading, setLoading] = React.useState(false);
+    const [loading, setLoading] = React.useState(true);
     const [searchTerm, setSearchTerm] = React.useState('');
     const [selectedMake, setSelectedMake] = React.useState('');
     const [orderBy, setOrderBy] = React.useState('dateAdded');
@@ -28,7 +28,7 @@ const RemovedVehicleList = () => {
         const fetchVehicles = async () => {
             try {
                 // Request the list of vehicles from the backend API endpoint and update state with the response data
-                const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/vehicle/listall`);
+                const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/vehicle/deletedvehicles`);
                 // Log the fetched vehicles to the console for debugging and set the vehicles state variable with the response data, or an empty array if no data is returned
                 setVehicles(res?.data?.vehicles || []);
                 // If the request is successful, reset the rateLimited state to false in case it was previously set to true due to a 429 error
@@ -49,33 +49,11 @@ const RemovedVehicleList = () => {
         };
         // Call the fetchVehicles function to initiate the API request when the component mounts
         fetchVehicles();
-
-        console.log(vehicles)
     }, []);
-
-    const handleCreateVehicleTest = async () => {
-        setLoading(true);
-        try {
-            // Create a new vehicle using the createVehicleREG controller function with a test registration number
-            const res= await axios.post(`${import.meta.env.VITE_BASE_URL}/api/vehicle/createvehiclereg/EK11YTH`);
-            // Spread the new note into the existing notes array to update state and trigger re-render
-            setVehicles(prevVehicles => [res?.data?.newVehicle, ...prevVehicles]);
-
-            console.log("Vehicles:", vehicles);
-            // Show success toast notification to user
-            toast.success('Vehicle created successfully');
-        } catch (error) {
-            // Log the error to the console for debugging
-            console.log("Error creating vehicle:", error);
-            toast.error('Error creating vehicle');
-        };
-        setLoading(false);
-    };
 
   return (
     <div className='min-h-screen'>
-      <StandardNavBar />
-        
+      <StandardNavBar />        
       {/* Filter Bar */}
       <div className={`md:sticky md:top-16 md:z-20 py-4 transition-all ${isScrolled ? 'md:bg-black md:border-b md:border-gray-200 md:shadow-sm' : ''}`}>
         <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
@@ -143,7 +121,7 @@ const RemovedVehicleList = () => {
         {(vehicles.length > 0) && (!rateLimited) && (
           <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
             {vehicles.map(vehicle => (
-              <VehicleCard key={vehicle._id} vehicle={vehicle} deleteButtonText="Restore" deleteButtonColor="green" />
+              <VehicleCard key={vehicle._id} vehicle={vehicle} deleteButtonText="Restore" deleteButtonColor="green" isDeleted={true} />
             ))}
           </div>
         )}

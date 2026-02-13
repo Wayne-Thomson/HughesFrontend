@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
+import axios from 'axios'
 
-const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor = 'red' }) => {
+const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor = 'red', isDeleted = false }) => {
   const [showConfirmation, setShowConfirmation] = useState(false)
   const [hardDeleteChecked, setHardDeleteChecked] = useState(false)
+  const [showPermanentDeleteConfirmation, setShowPermanentDeleteConfirmation] = useState(false)
 
   const {
     createdAt: dateAdded,
@@ -12,7 +14,8 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
     manufactureDate,
     enginePower,
     fuelType,
-    dateRemoved
+    dateRemoved,
+    vin
   } = vehicle
 
   const year = manufactureDate?.split('-')[0]
@@ -66,6 +69,27 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
     setHardDeleteChecked(false)
   }
 
+  const handlePermanentDeleteClick = () => {
+    setShowPermanentDeleteConfirmation(true)
+  }
+
+  const handleConfirmPermanentDelete = async () => {
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+      await axios.delete(`${apiUrl}/vehicle/${vehicle._id}`)
+      console.log(`Permanently deleted vehicle with registration: ${registration}`)
+      // You may want to trigger a page refresh or callback here
+    } catch (error) {
+      console.error('Error deleting vehicle:', error)
+    } finally {
+      setShowPermanentDeleteConfirmation(false)
+    }
+  }
+
+  const handleCancelPermanentDelete = () => {
+    setShowPermanentDeleteConfirmation(false)
+  }
+
   return (
     <li className="bg-white border border-gray-200 rounded-lg p-5 hover:shadow-lg transition-shadow duration-200">
       {/* Header with Registration and Date Stock */}
@@ -73,6 +97,7 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
         <div>
           <div className="bg-yellow-300 border-2 border-yellow-400 px-3 py-1 rounded inline-block mb-2">
             <h3 className="text-lg font-bold text-gray-700 font-mono tracking-wider">{registration}</h3>
+            <p className="text-sm text-gray-700 font-mono">{vin}</p>
           </div>
           <p className="text-sm text-gray-600 mt-1">
             {make} {model}
@@ -121,6 +146,14 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
       <button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 mb-2 px-4 rounded-lg transition-colors duration-200">
         View Details
       </button>
+      {isDeleted && (
+        <button
+          onClick={handlePermanentDeleteClick}
+          className="w-full bg-red-100 hover:bg-red-200 text-red-700 font-medium py-2 mb-2 px-4 rounded-lg transition-colors duration-200"
+        >
+          Hard Delete
+        </button>
+      )}
       <div className="flex gap-3">
         <button
           onClick={handleDeleteClick}
@@ -135,8 +168,8 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
 
       {/* Confirmation Modal */}
       {showConfirmation && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-xl p-6 max-w-sm mx-4">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={handleCancelDelete}>
+          <div className="bg-white rounded-lg shadow-xl p-6 max-w-sm mx-4" onClick={(e) => e.stopPropagation()}>
             <h3 className="text-lg font-bold text-gray-900 mb-4">
               Confirm {deleteButtonText}
             </h3>
@@ -174,6 +207,39 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
                 className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors"
               >
                 Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Permanent Delete Confirmation Modal */}
+      {showPermanentDeleteConfirmation && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={handleCancelPermanentDelete}>
+          <div className="bg-white rounded-lg shadow-xl p-6 max-w-sm mx-4" onClick={(e) => e.stopPropagation()}>
+            <h3 className="text-lg font-bold text-gray-900 mb-4">
+              Confirm Hard Delete
+            </h3>
+            <p className="text-gray-600 mb-4">
+              Are you sure you want to permanently delete this vehicle? This action cannot be undone.
+            </p>
+            <p className="text-sm font-semibold text-gray-700 mb-2">{registration}</p>
+            <p className="text-sm text-gray-600 mb-6">
+              {make} {model}
+            </p>
+
+            <div className="flex gap-3">
+              <button
+                onClick={handleCancelPermanentDelete}
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmPermanentDelete}
+                className="flex-1 px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-medium rounded-lg transition-colors"
+              >
+                Hard Delete
               </button>
             </div>
           </div>

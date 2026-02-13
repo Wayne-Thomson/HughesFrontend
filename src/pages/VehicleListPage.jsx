@@ -51,8 +51,6 @@ const VehicleListPage = () => {
         };
         // Call the fetchVehicles function to initiate the API request when the component mounts
         fetchVehicles();
-
-        console.log(vehicles)
     }, []);
 
     const handleCreateVehicleTest = async () => {
@@ -77,8 +75,6 @@ const VehicleListPage = () => {
   return (
     <div className='min-h-screen'>
       <StandardNavBar />
-      <button onClick={() => handleCreateVehicleTest()} >Create New Item</button>
-        
       {/* Filter Bar */}
       <div className={`md:sticky md:top-16 md:z-20 py-4 transition-all ${isScrolled ? 'md:bg-black md:border-b md:border-gray-200 md:shadow-sm' : ''}`}>
         <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
