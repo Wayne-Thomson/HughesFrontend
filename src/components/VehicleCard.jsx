@@ -14,7 +14,7 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
     manufactureDate,
     enginePower,
     fuelType,
-    dateRemoved,
+    dateDeleted,
     vin,
     _id,
   } = vehicle
@@ -125,9 +125,9 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
           <span className="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded">
             Date Added: {formatDate(dateAdded)}
           </span>
-          {dateRemoved && (
+          {dateDeleted && (
             <span className="inline-block bg-red-100 text-red-800 text-xs font-semibold px-3 py-1 rounded">
-              Date Removed: {formatDate(dateRemoved)}
+              Date Removed: {formatDate(dateDeleted)}
             </span>
           )}
         </div>
