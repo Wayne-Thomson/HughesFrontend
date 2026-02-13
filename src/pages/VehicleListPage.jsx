@@ -55,25 +55,6 @@ const VehicleListPage = () => {
         fetchVehicles();
     }, []);
 
-    const handleCreateVehicleTest = async () => {
-        setLoading(true);
-        try {
-            // Create a new vehicle using the createVehicleREG controller function with a test registration number
-            const res= await axios.post(`${import.meta.env.VITE_BASE_URL}/api/vehicle/createvehiclereg/EK11YTH`);
-            // Spread the new note into the existing notes array to update state and trigger re-render
-            setVehicles(prevVehicles => [res?.data?.newVehicle, ...prevVehicles]);
-
-            console.log("Vehicles:", vehicles);
-            // Show success toast notification to user
-            toast.success('Vehicle created successfully');
-        } catch (error) {
-            // Log the error to the console for debugging
-            console.log("Error creating vehicle:", error);
-            toast.error('Error creating vehicle');
-        };
-        setLoading(false);
-    };
-
     // Get unique makes and sort alphabetically
     const uniqueMakes = Array.from(new Set(vehicles.map(v => v.make)))
         .filter(make => make) // Remove any empty values
