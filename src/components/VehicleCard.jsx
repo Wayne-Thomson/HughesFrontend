@@ -71,7 +71,7 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
         }
     } else {
         try {
-            const res = await axios.delete(`${import.meta.env.VITE_BASE_URL}/api/vehicle/delete/${_id}`, { data: { hardDelete: true } });
+            // const res = await axios.delete(`${import.meta.env.VITE_BASE_URL}/api/vehicle/delete/${_id}`, { data: { hardDelete: true } });
             toast.success('Vehicle permanently deleted successfully')
             setVehicles(vehicles.filter(v => v._id !== _id));
         } catch (error) {
@@ -93,15 +93,18 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
   }
 
   const handleConfirmPermanentDelete = async () => {
+    setLoading(true);
+    setShowPermanentDeleteConfirmation(false)
     try {
-        // Make API call to permanently delete the vehicle
-      console.log(`Permanently deleted vehicle with registration: ${registration}`)
-      // You may want to trigger a page refresh or callback here
+        const res = await axios.delete(`${import.meta.env.VITE_BASE_URL}/api/vehicle/delete/${_id}`, { data: { hardDelete: true } });
+        toast.success('Vehicle permanently deleted successfully')
+        setVehicles(vehicles.filter(v => v._id !== _id));
     } catch (error) {
-      console.error('Error deleting vehicle:', error)
+        console.error('Error deleting vehicle:', error)
+        toast.error('Error loading vehicle details')
     } finally {
-      setShowPermanentDeleteConfirmation(false)
-    }
+        setLoading(false)
+    };
   }
 
   const handleCancelPermanentDelete = () => {
