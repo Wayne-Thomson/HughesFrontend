@@ -1,13 +1,11 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import axios from 'axios'
-import { useParams } from 'react-router'
 import toast from 'react-hot-toast';
 
-const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor = 'red', isDeleted = false, setLoading }) => {
+const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor = 'red', isDeleted = false, setLoading, vehicles, setVehicles }) => {
   const [showConfirmation, setShowConfirmation] = useState(false)
   const [hardDeleteChecked, setHardDeleteChecked] = useState(false)
   const [showPermanentDeleteConfirmation, setShowPermanentDeleteConfirmation] = useState(false)
-    const { id } = useParams()
   const {
     createdAt: dateAdded,
     registration,
@@ -17,7 +15,8 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
     enginePower,
     fuelType,
     dateRemoved,
-    vin
+    vin,
+    _id,
   } = vehicle
 
   const year = manufactureDate?.split('-')[0]
@@ -59,8 +58,10 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
 
     if (deleteButtonText === 'Delete') {
         try {
-            const res = await axios.delete(`${import.meta.env.VITE_BASE_URL}/api/vehicle/delete/${id}`, { data: { hardDelete: hardDeleteChecked } });
+            console.log(`Deleting vehicle with registration: ${registration}, hardDelete: ${hardDeleteChecked}`);
+            const res = await axios.delete(`${import.meta.env.VITE_BASE_URL}/api/vehicle/delete/${_id}`, { data: { hardDelete: hardDeleteChecked } });
             toast.success(hardDeleteChecked ? 'Vehicle permanently deleted successfully' : 'Vehicle deleted successfully');
+            setVehicles(vehicles.filter(v => v._id !== _id));
         } catch (error) {
             console.error('Error deleting vehicle:', error);
             toast.error('Error loading vehicle details');
@@ -69,8 +70,9 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
         }
     } else {
         try {
-            const res = await axios.delete(`${import.meta.env.VITE_BASE_URL}/api/vehicle/delete/${id}`, { data: { hardDelete: true } });
+            const res = await axios.delete(`${import.meta.env.VITE_BASE_URL}/api/vehicle/delete/${_id}`, { data: { hardDelete: true } });
             toast.success('Vehicle permanently deleted successfully')
+            setVehicles(vehicles.filter(v => v._id !== _id));
         } catch (error) {
             console.error('Error deleting vehicle:', error)
             toast.error('Error loading vehicle details')
