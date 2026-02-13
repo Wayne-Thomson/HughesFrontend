@@ -4,6 +4,7 @@ import RateLimitedUI from '../components/RateLimitedUI.jsx';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import VehicleCard from '../components/VehicleCard.jsx';
+import { ArrowUp, ArrowDown } from 'lucide-react';
 
 console.log(import.meta.env.VITE_ACCESS_KEY);
 
@@ -14,6 +15,7 @@ const VehicleListPage = () => {
     const [ searchTerm, setSearchTerm ] = React.useState('');
     const [ selectedMake, setSelectedMake ] = React.useState('');
     const [ orderBy, setOrderBy ] = React.useState('dateAdded');
+    const [ sortDirection, setSortDirection ] = React.useState('desc');
     const [ isScrolled, setIsScrolled ] = React.useState(false);
 
     React.useEffect(() => {
@@ -90,6 +92,30 @@ const VehicleListPage = () => {
                             (vehicle.make && vehicle.make.toLowerCase().includes(searchTerm.toLowerCase())) ||
                             (vehicle.model && vehicle.model.toLowerCase().includes(searchTerm.toLowerCase()));
         return matchesMake && matchesSearch;
+    }).sort((a, b) => {
+        let aValue, bValue;
+        const isAsc = sortDirection === 'asc';
+        
+        switch(orderBy) {
+            case 'dateAdded':
+                aValue = new Date(a.createdAt).getTime();
+                bValue = new Date(b.createdAt).getTime();
+                return isAsc ? aValue - bValue : bValue - aValue;
+            case 'year':
+                aValue = a.manufactureDate ? parseInt(a.manufactureDate.split('-')[0]) : 0;
+                bValue = b.manufactureDate ? parseInt(b.manufactureDate.split('-')[0]) : 0;
+                return isAsc ? aValue - bValue : bValue - aValue;
+            case 'make':
+                aValue = a.make || '';
+                bValue = b.make || '';
+                return isAsc ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+            case 'registration':
+                aValue = a.registration || '';
+                bValue = b.registration || '';
+                return isAsc ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+            default:
+                return 0;
+        }
     });
 
   return (
@@ -139,17 +165,26 @@ const VehicleListPage = () => {
             <label htmlFor="orderby" className="block text-sm font-medium text-gray-400 mb-1">
               Order By:
             </label>
-            <select
-              id="orderby"
-              value={orderBy}
-              onChange={(e) => setOrderBy(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition bg-white cursor-pointer text-gray-900"
-            >
-              <option value="dateAdded">Date Added</option>
-              <option value="year">Year</option>
-              <option value="make">Make</option>
-              <option value="registration">Registration</option>
-            </select>
+            <div className="flex gap-2">
+              <select
+                id="orderby"
+                value={orderBy}
+                onChange={(e) => setOrderBy(e.target.value)}
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition bg-white cursor-pointer text-gray-900"
+              >
+                <option value="dateAdded">Date Added</option>
+                <option value="year">Year</option>
+                <option value="make">Make</option>
+                <option value="registration">Registration</option>
+              </select>
+              <button
+                onClick={() => setSortDirection(sortDirection === 'desc' ? 'asc' : 'desc')}
+                className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-100 transition bg-white cursor-pointer text-gray-900 flex items-center justify-center"
+                title={`Sort ${sortDirection === 'desc' ? 'Ascending' : 'Descending'}`}
+              >
+                {sortDirection === 'desc' ? <ArrowDown size={20} /> : <ArrowUp size={20} />}
+              </button>
+            </div>
           </div>
         </div>
       </div>
