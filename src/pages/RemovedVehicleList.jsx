@@ -68,8 +68,10 @@ const RemovedVehicleList = () => {
         const matchesMake = selectedMake === '' || (vehicle.make && vehicle.make === selectedMake);
         const matchesSearch = !searchTerm || 
                             (vehicle.registration && vehicle.registration.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                            (vehicle.vin && vehicle.vin.toLowerCase().includes(searchTerm.toLowerCase())) ||
                             (vehicle.make && vehicle.make.toLowerCase().includes(searchTerm.toLowerCase())) ||
-                            (vehicle.model && vehicle.model.toLowerCase().includes(searchTerm.toLowerCase()));
+                            (vehicle.model && vehicle.model.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                            (vehicle.createdAt && vehicle.createdAt.toLowerCase().includes(searchTerm.toLowerCase()));
         return matchesMake && matchesSearch;
     }).sort((a, b) => {
         let aValue, bValue;
