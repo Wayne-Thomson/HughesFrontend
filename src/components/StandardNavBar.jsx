@@ -1,16 +1,25 @@
 import { PlusIcon, Menu, X, LogOut } from 'lucide-react'
-import { Link, useLocation } from 'react-router'
+import { Link, useLocation, useNavigate } from 'react-router'
 import { useState } from 'react'
+import toast from 'react-hot-toast';
 
 const StandardNavBar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const location = useLocation()
+  const navigate = useNavigate()
 
   const isOnVehicles = location.pathname === '/vehicles'
   const isOnUsers = location.pathname === '/users'
   const isOnDeleted = location.pathname === '/deleted'
 
   const closeMenu = () => setMobileMenuOpen(false)
+
+  const handleLogout = () => {
+    localStorage.clear()
+    toast.success('Logged out successfully!')
+    navigate('/')
+    closeMenu()
+  }
 
   return (
     <header className='sticky top-0 z-30 bg-gray-200 border-b border-gray-300 shadow-md'>
@@ -63,7 +72,7 @@ const StandardNavBar = () => {
             )}
 
             {/* Logout Button */}
-            <button className='hidden md:flex items-center gap-2 text-gray-700 border border-gray-300 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors'>
+            <button onClick={handleLogout} className='hidden md:flex items-center gap-2 text-gray-700 border border-gray-300 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors'>
               <LogOut className='size-5'/>
               <span>Logout</span>
             </button>
@@ -152,7 +161,7 @@ const StandardNavBar = () => {
 
                 {/* Logout Button in Mobile Menu */}
                 <button 
-                  onClick={closeMenu}
+                  onClick={handleLogout}
                   className='flex items-center justify-center gap-2 text-gray-700 border border-gray-300 px-4 py-3 rounded-lg hover:bg-gray-300 transition-colors mt-4'
                 >
                   <LogOut className='size-5'/>
