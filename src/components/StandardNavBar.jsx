@@ -1,12 +1,13 @@
 import { PlusIcon, Menu, X, LogOut } from 'lucide-react'
 import { Link, useLocation, useNavigate } from 'react-router'
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import toast from 'react-hot-toast';
 
 const StandardNavBar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const location = useLocation()
   const navigate = useNavigate()
+  const hasShownToastRef = useRef(false)
 
   const isOnVehicles = location.pathname === '/vehicles'
   const isOnUsers = location.pathname === '/users'
@@ -20,6 +21,36 @@ const StandardNavBar = () => {
     navigate('/')
     closeMenu()
   }
+
+  useEffect(() => {
+    if (hasShownToastRef.current) return
+
+    const userData = localStorage.getItem('userData')
+    
+    if (!userData) {
+      localStorage.clear()
+      toast.error('You must be logged in to access this page.');
+      hasShownToastRef.current = true
+      navigate('/')
+      return
+    }
+
+    try {
+      const parsedData = JSON.parse(userData)
+      if (parsedData.message !== 'Login successful') {
+        localStorage.clear()
+        toast.error('You must be logged in to access this page.');
+        hasShownToastRef.current = true
+        navigate('/')
+      }
+    } catch (error) {
+      console.error('Error parsing userData:', error)
+      localStorage.clear()
+      toast.error('You must be logged in to access this page.');
+      hasShownToastRef.current = true
+      navigate('/')
+    }
+  }, [])
 
   return (
     <header className='sticky top-0 z-30 bg-gray-200 border-b border-gray-300 shadow-md'>
