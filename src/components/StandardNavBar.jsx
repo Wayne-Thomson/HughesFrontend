@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router'
 import { useState, useEffect, useRef } from 'react'
 import toast from 'react-hot-toast';
 
-const StandardNavBar = () => {
+const StandardNavBar = ({ onOpenAddVehicleModal }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const location = useLocation()
   const navigate = useNavigate()
@@ -96,7 +96,7 @@ const StandardNavBar = () => {
           {/* Right Side - Add Vehicle Button (desktop) and Mobile Menu */}
           <div className='flex items-center gap-2'>
             {isOnVehicles && (
-              <button className='hidden md:flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition-colors'>
+              <button onClick={onOpenAddVehicleModal} className='hidden md:flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition-colors'>
                 <PlusIcon className='size-5'/>
                 <span>Add Vehicle</span>
               </button>
@@ -182,7 +182,10 @@ const StandardNavBar = () => {
                 {/* Add Vehicle Button in Mobile Menu */}
                 {isOnVehicles && (
                   <button 
-                    onClick={closeMenu}
+                    onClick={() => {
+                      onOpenAddVehicleModal()
+                      closeMenu()
+                    }}
                     className='flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-3 rounded-lg transition-colors mt-4'
                   >
                     <PlusIcon className='size-5'/>

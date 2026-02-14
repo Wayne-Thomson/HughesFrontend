@@ -1,6 +1,7 @@
 import React from 'react'
 import StandardNavBar from '../components/StandardNavBar.jsx';
 import RateLimitedUI from '../components/RateLimitedUI.jsx';
+import AddVehicleModal from '../components/AddVehicleModal.jsx';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import VehicleCard from '../components/VehicleCard.jsx';
@@ -17,6 +18,7 @@ const VehicleListPage = () => {
     const [ orderBy, setOrderBy ] = React.useState('dateAdded');
     const [ sortDirection, setSortDirection ] = React.useState('desc');
     const [ isScrolled, setIsScrolled ] = React.useState(false);
+    const [ showAddVehicleModal, setShowAddVehicleModal ] = React.useState(false);
 
     React.useEffect(() => {
         const handleScroll = () => {
@@ -27,35 +29,27 @@ const VehicleListPage = () => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-    React.useEffect(() => {
-        // Get list of vehicles from backend
-        const fetchVehicles = async () => {
-          toast.loading('Loading vehicles...', { id: 'fetchVehicles' });
-            try {
-                // Request the list of vehicles from the backend API endpoint and update state with the response data
-                const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/vehicle/listall`);
-                // Log the fetched vehicles to the console for debugging and set the vehicles state variable with the response data, or an empty array if no data is returned
-                setVehicles(res?.data?.vehicles || []);
-                // If the request is successful, reset the rateLimited state to false in case it was previously set to true due to a 429 error
-                setRateLimited(false);
-                toast.dismiss('fetchVehicles');
-                toast.success('Vehicles loaded successfully!', { id: 'fetchVehicles' });
-            } catch (error) {
-                // Log any errors that occur during the fetch to the console for debugging
-                console.log("Error fetching vehicles:", error);
-                // If the error response status is 429, it means the user has hit the rate limit, so we set the rateLimited state to true to show the appropriate UI
-                if (error.response && error.response.status === 429) {
-                    setRateLimited(true);
-                }
-                // Show an error toast notification to the user indicating that there was an error fetching the vehicles
-                toast.dismiss('fetchVehicles');
-                toast.error('Error fetching vehicles', { id: 'fetchVehicles' });
-            } finally {
-                // In the finally block, we set loading to false to indicate that the fetch operation has completed, regardless of whether it was successful or resulted in an error
-                setLoading(false);
+    const fetchVehicles = async () => {
+        toast.loading('Loading vehicles...', { id: 'fetchVehicles' });
+        try {
+            const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/vehicle/listall`);
+            setVehicles(res?.data?.vehicles || []);
+            setRateLimited(false);
+            toast.dismiss('fetchVehicles');
+            toast.success('Vehicles loaded successfully!', { id: 'fetchVehicles' });
+        } catch (error) {
+            console.log("Error fetching vehicles:", error);
+            if (error.response && error.response.status === 429) {
+                setRateLimited(true);
             }
-        };
-        // Call the fetchVehicles function to initiate the API request when the component mounts
+            toast.dismiss('fetchVehicles');
+            toast.error('Error fetching vehicles', { id: 'fetchVehicles' });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    React.useEffect(() => {
         fetchVehicles();
     }, []);
 
@@ -107,7 +101,7 @@ const VehicleListPage = () => {
 
   return (
     <div className='min-h-screen'>
-      <StandardNavBar />
+      <StandardNavBar onOpenAddVehicleModal={() => setShowAddVehicleModal(true)} />
       {/* Filter Bar */}
       <div className={`md:sticky md:top-16 md:z-20 py-4 transition-all ${isScrolled ? 'md:bg-black md:border-b md:border-gray-200 md:shadow-sm' : ''}`}>
         <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
@@ -199,6 +193,12 @@ const VehicleListPage = () => {
       </div>
 
       {rateLimited && <RateLimitedUI />}
+
+      <AddVehicleModal 
+        isOpen={showAddVehicleModal} 
+        onClose={() => setShowAddVehicleModal(false)}
+        onVehicleAdded={fetchVehicles}
+      />
       
     </div>
   )
