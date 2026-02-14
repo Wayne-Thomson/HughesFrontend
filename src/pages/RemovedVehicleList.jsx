@@ -28,6 +28,7 @@ const RemovedVehicleList = () => {
     React.useEffect(() => {
         // Get list of vehicles from backend
         const fetchVehicles = async () => {
+          toast.loading('Loading vehicles...', { id: 'fetchVehicles' });
             try {
                 // Request the list of vehicles from the backend API endpoint and update state with the response data
                 const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/vehicle/deletedvehicles`);
@@ -35,6 +36,8 @@ const RemovedVehicleList = () => {
                 setVehicles(res?.data?.vehicles || []);
                 // If the request is successful, reset the rateLimited state to false in case it was previously set to true due to a 429 error
                 setRateLimited(false);
+                toast.dismiss('fetchVehicles');
+                toast.success('Vehicles loaded successfully!', { id: 'fetchVehicles' });
             } catch (error) {
                 // Log any errors that occur during the fetch to the console for debugging
                 console.log("Error fetching vehicles:", error);
@@ -43,7 +46,8 @@ const RemovedVehicleList = () => {
                     setRateLimited(true);
                 }
                 // Show an error toast notification to the user indicating that there was an error fetching the vehicles
-                toast.error('Error fetching vehicles');
+                toast.dismiss('fetchVehicles');
+                toast.error('Error fetching vehicles', { id: 'fetchVehicles' });
             } finally {
                 // In the finally block, we set loading to false to indicate that the fetch operation has completed, regardless of whether it was successful or resulted in an error
                 setLoading(false);
