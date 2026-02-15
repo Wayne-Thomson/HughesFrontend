@@ -12,11 +12,13 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
     make,
     model,
     manufactureDate,
-    enginePower,
+    engineSize,
     fuelType,
     dateDeleted,
     vin,
     _id,
+    enginePower,
+    primaryColour
   } = vehicle
 
   const year = manufactureDate?.split('-')[0]
@@ -150,16 +152,19 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
           <p className="text-base font-medium text-gray-900 mt-1">{fuelType}</p>
         </div>
 
-        {/* Engine Power - CC */}
+        {/* Engine Size - CC and Calculated BHP */}
         <div>
-          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Engine Power</p>
-          <p className="text-base font-medium text-gray-900 mt-1">{enginePower?.cc || 'N/A'} cc</p>
+          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Engine Size</p>
+          <p className="text-base font-medium text-gray-900 mt-1">{engineSize || 'N/A'} cc</p>
+          {engineSize && (
+            <p className="text-sm font-medium text-gray-700 mt-1">≈ {Math.round(engineSize / 15)} bhp</p>
+          )}
         </div>
 
-        {/* Engine Power - BHP */}
+        {/* Color */}
         <div>
-          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Power</p>
-          <p className="text-base font-medium text-gray-900 mt-1">{enginePower?.bhp || 'N/A'} bhp</p>
+          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Colour</p>
+          <p className="text-base font-medium text-gray-900 mt-1">{primaryColour || 'N/A'}</p>
         </div>
       </div>
 
