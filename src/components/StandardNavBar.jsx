@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router'
 import { useState, useEffect, useRef } from 'react'
 import toast from 'react-hot-toast';
 
-const StandardNavBar = ({ onOpenAddVehicleModal }) => {
+const StandardNavBar = ({ onOpenAddVehicleModal, onOpenAddUserModal }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const location = useLocation()
   const navigate = useNavigate()
@@ -12,6 +12,19 @@ const StandardNavBar = ({ onOpenAddVehicleModal }) => {
   const isOnVehicles = location.pathname === '/vehicles'
   const isOnUsers = location.pathname === '/users'
   const isOnDeleted = location.pathname === '/deleted'
+
+  // Check if user is admin
+  const isAdmin = () => {
+    try {
+      const userData = localStorage.getItem('userData')
+      if (!userData) return false
+      const parsedData = JSON.parse(userData)
+      return parsedData.user?.isAdmin === true
+    } catch (error) {
+      console.error('Error checking admin status:', error)
+      return false
+    }
+  }
 
   const closeMenu = () => setMobileMenuOpen(false)
 
@@ -93,12 +106,19 @@ const StandardNavBar = ({ onOpenAddVehicleModal }) => {
             </Link>
           </nav>
 
-          {/* Right Side - Add Vehicle Button (desktop) and Mobile Menu */}
+          {/* Right Side - Add Vehicle/User Button (desktop) and Mobile Menu */}
           <div className='flex items-center gap-2'>
             {isOnVehicles && (
               <button onClick={onOpenAddVehicleModal} className='hidden md:flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition-colors'>
                 <PlusIcon className='size-5'/>
                 <span>Add Vehicle</span>
+              </button>
+            )}
+
+            {isOnUsers && isAdmin() && (
+              <button onClick={onOpenAddUserModal} className='hidden md:flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition-colors'>
+                <PlusIcon className='size-5'/>
+                <span>Add User</span>
               </button>
             )}
 
@@ -190,6 +210,20 @@ const StandardNavBar = ({ onOpenAddVehicleModal }) => {
                   >
                     <PlusIcon className='size-5'/>
                     <span>Add Vehicle</span>
+                  </button>
+                )}
+
+                {/* Add User Button in Mobile Menu */}
+                {isOnUsers && isAdmin() && (
+                  <button 
+                    onClick={() => {
+                      onOpenAddUserModal()
+                      closeMenu()
+                    }}
+                    className='flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-3 rounded-lg transition-colors mt-4'
+                  >
+                    <PlusIcon className='size-5'/>
+                    <span>Add User</span>
                   </button>
                 )}
 
