@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router'
 import StandardNavBar from '../components/StandardNavBar'
 import AddUserModal from '../components/AddUserModal'
+import UserCard from '../components/UserCard'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 
@@ -34,11 +35,11 @@ const UsersPage = () => {
   }, [navigate])
 
   const handleUserAdded = () => {
-    // Refresh users list or perform any necessary actions
-    // This callback can be expanded to fetch and display users
+    fetchUsers()
   }
 
   const fetchUsers = useCallback(async () => {
+    setLoading(true)
     toast.loading('Loading users...', { id: 'fetchUsers' });
     try {
         const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/user/listall`);
@@ -58,13 +59,43 @@ const UsersPage = () => {
     }
   }, []);
 
+  React.useEffect(() => {
+      fetchUsers();
+  }, [fetchUsers]);
+
   return (
     <div className='min-h-screen'>
       <StandardNavBar onOpenAddUserModal={() => setShowAddUserModal(true)} />
-       <div className="max-w-7xl mx-auto p-4 mt-6">
-         <h1 className="text-3xl font-bold mb-4">Users</h1>
-         {/* User list or content goes here */}
-       </div>
+      
+      {/* Semi-transparent overlay when loading */}
+      {loading && (
+        <>
+          <div className="fixed inset-0 bg-black bg-opacity-50 z-40 pointer-events-none"></div>
+          <div className="fixed inset-0 flex justify-center items-center z-50 pointer-events-none">
+            <div className="animate-spin rounded-full h-16 w-16 border-4 border-gray-300 border-t-indigo-600"></div>
+          </div>
+        </>
+      )}
+
+      <div className="max-w-7xl mx-auto p-4 mt-6">
+        <div className="mb-6">
+          <h1 className="text-3xl font-bold text-white">Users</h1>
+          <p className="text-gray-300 mt-2">Manage application users</p>
+        </div>
+
+        {(users.length > 0) && (!rateLimited) && (
+          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+            {users.map(user => (
+              <UserCard key={user._id} user={user} setLoading={setLoading} users={users} setUsers={setUsers} />
+            ))}
+          </div>
+        )}
+        {(users.length === 0) && (!rateLimited) && (
+          <div className="text-center py-12">
+            <p className="text-gray-500 text-lg">No users found</p>
+          </div>
+        )}
+      </div>
 
       <AddUserModal 
         isOpen={showAddUserModal} 
