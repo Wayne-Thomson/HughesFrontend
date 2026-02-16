@@ -118,7 +118,7 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
   }
 
   return (
-    <li className="bg-white border border-gray-200 rounded-lg p-5 hover:shadow-lg transition-shadow duration-200">
+    <li className="bg-white border border-gray-200 rounded-lg p-5 hover:shadow-lg transition-shadow duration-200 flex flex-col h-full">
       {/* Header with Registration and Date Stock */}
       <div className="flex justify-between items-start mb-4 gap-4">
         <div>
@@ -173,32 +173,34 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
       </div>
 
       {/* Action Buttons */}
-      <button 
-        onClick={() => setShowDetailsModal(true)}
-        className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 mb-2 px-4 rounded-lg transition-colors duration-200"
-      >
-        View Details
-      </button>
-      <button 
-        onClick={() => setShowNotesModal(true)}
-        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 mb-2 px-4 rounded-lg transition-colors duration-200"
-      >
-        View/Update Notes
-      </button>
-      {isDeleted && (
-        <button
-          onClick={handlePermanentDeleteClick}
-          className="w-full bg-red-100 hover:bg-red-200 text-red-700 font-medium py-2 mb-2 px-4 rounded-lg transition-colors duration-200"
+      <div className="mt-auto space-y-2">
+        <button 
+          onClick={() => setShowDetailsModal(true)}
+          className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
         >
-          Hard Delete
+          View Details
         </button>
-      )}
-      <button
-        onClick={handleDeleteClick}
-        className={`w-full ${colorClasses[deleteButtonColor]} font-medium py-2 px-4 rounded-lg transition-colors duration-200`}
-      >
-        {deleteButtonText}
-      </button>
+        <button 
+          onClick={() => setShowNotesModal(true)}
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
+        >
+          View/Update Notes
+        </button>
+        {isDeleted && (
+          <button
+            onClick={handlePermanentDeleteClick}
+            className="w-full bg-red-100 hover:bg-red-200 text-red-700 font-medium py-2 px-4 rounded-lg transition-colors duration-200"
+          >
+            Hard Delete
+          </button>
+        )}
+        <button
+          onClick={handleDeleteClick}
+          className={`w-full ${colorClasses[deleteButtonColor]} font-medium py-2 px-4 rounded-lg transition-colors duration-200`}
+        >
+          {deleteButtonText}
+        </button>
+      </div>
 
       {/* Confirmation Modal */}
       {showConfirmation && (
