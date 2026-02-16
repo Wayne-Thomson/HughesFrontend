@@ -7,8 +7,6 @@ import toast from 'react-hot-toast';
 import VehicleCard from '../components/VehicleCard.jsx';
 import { ArrowUp, ArrowDown } from 'lucide-react';
 
-console.log(import.meta.env.VITE_ACCESS_KEY);
-
 const VehicleListPage = () => {
     const [ loading, setLoading ] = React.useState(true);
     const [ rateLimited, setRateLimited ] = React.useState(false);
@@ -19,6 +17,7 @@ const VehicleListPage = () => {
     const [ sortDirection, setSortDirection ] = React.useState('desc');
     const [ isScrolled, setIsScrolled ] = React.useState(false);
     const [ showAddVehicleModal, setShowAddVehicleModal ] = React.useState(false);
+    const [ itemsToShow, setItemsToShow ] = React.useState(20);
 
     React.useEffect(() => {
         let throttleTimer = null;
@@ -28,8 +27,15 @@ const VehicleListPage = () => {
             
             throttleTimer = setTimeout(() => {
                 setIsScrolled(window.scrollY > 100);
+                
+                // Lazy load more vehicles when user scrolls near bottom
+                const scrolledPercentage = (window.scrollY + window.innerHeight) / document.documentElement.scrollHeight;
+                if (scrolledPercentage > 0.8) {
+                    setItemsToShow(prev => prev + 20);
+                }
+                
                 throttleTimer = null;
-            }, 100); // Throttle to 100ms
+            }, 100);
         };
 
         window.addEventListener('scroll', handleScroll);
@@ -39,7 +45,7 @@ const VehicleListPage = () => {
         };
     }, []);
 
-    const fetchVehicles = async () => {
+    const fetchVehicles = useCallback(async () => {
         toast.loading('Loading vehicles...', { id: 'fetchVehicles' });
         try {
             const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/vehicle/listall`);
@@ -57,11 +63,16 @@ const VehicleListPage = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
     React.useEffect(() => {
         fetchVehicles();
-    }, []);
+    }, [fetchVehicles]);
+
+    // Reset items to show when filters change
+    React.useEffect(() => {
+        setItemsToShow(20);
+    }, [searchTerm, selectedMake, orderBy, sortDirection]);
 
     // Get unique makes and sort alphabetically
     const uniqueMakes = useMemo(() => {
@@ -193,11 +204,20 @@ const VehicleListPage = () => {
 
       <div className="max-w-7xl mx-auto p-4 mt-6">
         {(filteredVehicles.length > 0) && (!rateLimited) && (
-          <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
-            {filteredVehicles.map(vehicle => (
-              <VehicleCard key={vehicle._id} vehicle={vehicle} setLoading={setLoading} vehicles={vehicles} setVehicles={setVehicles} />
-            ))}
-          </div>
+          <>
+            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+              {filteredVehicles.slice(0, itemsToShow).map(vehicle => (
+                <VehicleCard key={vehicle._id} vehicle={vehicle} setLoading={setLoading} vehicles={vehicles} setVehicles={setVehicles} />
+              ))}
+            </div>
+            {itemsToShow < filteredVehicles.length && (
+              <div className="text-center py-8">
+                <p className="text-gray-500 text-sm">
+                  Showing {itemsToShow} of {filteredVehicles.length} vehicles. Scroll down to load more.
+                </p>
+              </div>
+            )}
+          </>
         )}
         {(filteredVehicles.length === 0) && (vehicles.length > 0) && (!rateLimited) && (
           <div className="text-center py-12">

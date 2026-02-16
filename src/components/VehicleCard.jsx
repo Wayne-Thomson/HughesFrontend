@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import axios from 'axios'
 import toast from 'react-hot-toast';
 import VehicleDetailsModal from './VehicleDetailsModal'
@@ -299,4 +299,4 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
   )
 }
 
-export default VehicleCard
+export default React.memo(VehicleCard)
