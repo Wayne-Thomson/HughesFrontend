@@ -1,11 +1,15 @@
 import { useState } from 'react'
 import axios from 'axios'
 import toast from 'react-hot-toast';
+import VehicleDetailsModal from './VehicleDetailsModal'
+import VehicleNotesModal from './VehicleNotesModal'
 
 const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor = 'red', isDeleted = false, setLoading, vehicles, setVehicles }) => {
   const [showConfirmation, setShowConfirmation] = useState(false)
   const [hardDeleteChecked, setHardDeleteChecked] = useState(false)
   const [showPermanentDeleteConfirmation, setShowPermanentDeleteConfirmation] = useState(false)
+  const [showDetailsModal, setShowDetailsModal] = useState(false)
+  const [showNotesModal, setShowNotesModal] = useState(false)
   const {
     createdAt: dateAdded,
     registration,
@@ -169,8 +173,17 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
       </div>
 
       {/* Action Buttons */}
-      <button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 mb-2 px-4 rounded-lg transition-colors duration-200">
+      <button 
+        onClick={() => setShowDetailsModal(true)}
+        className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 mb-2 px-4 rounded-lg transition-colors duration-200"
+      >
         View Details
+      </button>
+      <button 
+        onClick={() => setShowNotesModal(true)}
+        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 mb-2 px-4 rounded-lg transition-colors duration-200"
+      >
+        View/Update Notes
       </button>
       {isDeleted && (
         <button
@@ -180,17 +193,12 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
           Hard Delete
         </button>
       )}
-      <div className="flex gap-3">
-        <button
-          onClick={handleDeleteClick}
-          className={`flex-1 ${colorClasses[deleteButtonColor]} font-medium py-2 px-4 rounded-lg transition-colors duration-200`}
-        >
-          {deleteButtonText}
-        </button>
-        <button className="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200">
-          View/Update Note
-        </button>
-      </div>
+      <button
+        onClick={handleDeleteClick}
+        className={`w-full ${colorClasses[deleteButtonColor]} font-medium py-2 px-4 rounded-lg transition-colors duration-200`}
+      >
+        {deleteButtonText}
+      </button>
 
       {/* Confirmation Modal */}
       {showConfirmation && (
@@ -275,6 +283,18 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
           </div>
         </div>
       )}
+
+      <VehicleDetailsModal
+        isOpen={showDetailsModal}
+        onClose={() => setShowDetailsModal(false)}
+        vehicle={vehicle}
+      />
+
+      <VehicleNotesModal
+        isOpen={showNotesModal}
+        onClose={() => setShowNotesModal(false)}
+        vehicle={vehicle}
+      />
     </li>
   )
 }
