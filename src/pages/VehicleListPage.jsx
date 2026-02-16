@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback, useMemo } from 'react'
 import StandardNavBar from '../components/StandardNavBar.jsx';
 import RateLimitedUI from '../components/RateLimitedUI.jsx';
 import AddVehicleModal from '../components/AddVehicleModal.jsx';
@@ -21,12 +21,22 @@ const VehicleListPage = () => {
     const [ showAddVehicleModal, setShowAddVehicleModal ] = React.useState(false);
 
     React.useEffect(() => {
+        let throttleTimer = null;
+        
         const handleScroll = () => {
-            setIsScrolled(window.scrollY > 100);
+            if (throttleTimer) return;
+            
+            throttleTimer = setTimeout(() => {
+                setIsScrolled(window.scrollY > 100);
+                throttleTimer = null;
+            }, 100); // Throttle to 100ms
         };
 
         window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+            if (throttleTimer) clearTimeout(throttleTimer);
+        };
     }, []);
 
     const fetchVehicles = async () => {
@@ -54,50 +64,54 @@ const VehicleListPage = () => {
     }, []);
 
     // Get unique makes and sort alphabetically
-    const uniqueMakes = Array.from(new Set(vehicles.map(v => v.make)))
-        .filter(make => make) // Remove any empty values
-        .sort();
+    const uniqueMakes = useMemo(() => {
+        return Array.from(new Set(vehicles.map(v => v.make)))
+            .filter(make => make)
+            .sort();
+    }, [vehicles]);
 
     // Get count of vehicles for each make
-    const getCountForMake = (make) => {
+    const getCountForMake = useCallback((make) => {
         return vehicles.filter(v => v.make === make).length;
-    };
+    }, [vehicles]);
 
     // Filter vehicles based on selected make and search term
-    const filteredVehicles = vehicles.filter(vehicle => {
-        const matchesMake = selectedMake === '' || (vehicle.make && vehicle.make === selectedMake);
-        const matchesSearch = !searchTerm || 
-                            (vehicle.registration && vehicle.registration.toLowerCase().includes(searchTerm.toLowerCase())) ||
-                            (vehicle.vin && vehicle.vin.toLowerCase().includes(searchTerm.toLowerCase())) ||
-                            (vehicle.make && vehicle.make.toLowerCase().includes(searchTerm.toLowerCase())) ||
-                            (vehicle.model && vehicle.model.toLowerCase().includes(searchTerm.toLowerCase())) ||
-                            (vehicle.createdAt && vehicle.createdAt.toLowerCase().includes(searchTerm.toLowerCase()));
-        return matchesMake && matchesSearch;
-    }).sort((a, b) => {
-        let aValue, bValue;
-        const isAsc = sortDirection === 'asc';
-        
-        switch(orderBy) {
-            case 'dateAdded':
-                aValue = new Date(a.createdAt).getTime();
-                bValue = new Date(b.createdAt).getTime();
-                return isAsc ? aValue - bValue : bValue - aValue;
-            case 'year':
-                aValue = a.manufactureDate ? parseInt(a.manufactureDate.split('-')[0]) : 0;
-                bValue = b.manufactureDate ? parseInt(b.manufactureDate.split('-')[0]) : 0;
-                return isAsc ? aValue - bValue : bValue - aValue;
-            case 'make':
-                aValue = a.make || '';
-                bValue = b.make || '';
-                return isAsc ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
-            case 'registration':
-                aValue = a.registration || '';
-                bValue = b.registration || '';
-                return isAsc ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
-            default:
-                return 0;
-        }
-    });
+    const filteredVehicles = useMemo(() => {
+        return vehicles.filter(vehicle => {
+            const matchesMake = selectedMake === '' || (vehicle.make && vehicle.make === selectedMake);
+            const matchesSearch = !searchTerm || 
+                                (vehicle.registration && vehicle.registration.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                                (vehicle.vin && vehicle.vin.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                                (vehicle.make && vehicle.make.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                                (vehicle.model && vehicle.model.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                                (vehicle.createdAt && vehicle.createdAt.toLowerCase().includes(searchTerm.toLowerCase()));
+            return matchesMake && matchesSearch;
+        }).sort((a, b) => {
+            let aValue, bValue;
+            const isAsc = sortDirection === 'asc';
+            
+            switch(orderBy) {
+                case 'dateAdded':
+                    aValue = new Date(a.createdAt).getTime();
+                    bValue = new Date(b.createdAt).getTime();
+                    return isAsc ? aValue - bValue : bValue - aValue;
+                case 'year':
+                    aValue = a.manufactureDate ? parseInt(a.manufactureDate.split('-')[0]) : 0;
+                    bValue = b.manufactureDate ? parseInt(b.manufactureDate.split('-')[0]) : 0;
+                    return isAsc ? aValue - bValue : bValue - aValue;
+                case 'make':
+                    aValue = a.make || '';
+                    bValue = b.make || '';
+                    return isAsc ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+                case 'registration':
+                    aValue = a.registration || '';
+                    bValue = b.registration || '';
+                    return isAsc ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+                default:
+                    return 0;
+            }
+        });
+    }, [vehicles, selectedMake, searchTerm, orderBy, sortDirection]);
 
   return (
     <div className='min-h-screen'>
