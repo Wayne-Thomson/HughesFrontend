@@ -8,7 +8,14 @@ const UserCard = ({ user, setLoading, users, setUsers }) => {
   const [showDisableConfirm, setShowDisableConfirm] = useState(false)
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false)
   const [newPassword, setNewPassword] = useState('')
-  const { _id, email, userName, fullName, isAdmin } = user
+  const { _id, email, username, displayName, isAdmin } = user
+
+  const capitalizeWords = (str) => {
+    return str
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ')
+  }
 
   const handleDeleteClick = () => {
     setShowDeleteConfirm(true)
@@ -18,7 +25,7 @@ const UserCard = ({ user, setLoading, users, setUsers }) => {
     setLoading(true)
     setShowDeleteConfirm(false)
     try {
-      const res = await axios.delete(`${import.meta.env.VITE_BASE_URL}/api/users/${_id}`)
+      const res = await axios.delete(`${import.meta.env.VITE_BASE_URL}/api/user/${_id}`)
       toast.success('User deleted successfully')
       setUsers(users.filter(u => u._id !== _id))
     } catch (error) {
@@ -37,7 +44,7 @@ const UserCard = ({ user, setLoading, users, setUsers }) => {
     setLoading(true)
     setShowDisableConfirm(false)
     try {
-      const res = await axios.put(`${import.meta.env.VITE_BASE_URL}/api/users/${_id}/toggle-disable`)
+      const res = await axios.put(`${import.meta.env.VITE_BASE_URL}/api/user/${_id}/toggle-disable`)
       toast.success(`User ${user.disabled ? 'enabled' : 'disabled'} successfully`)
       setUsers(users.map(u => u._id === _id ? { ...u, disabled: !u.disabled } : u))
     } catch (error) {
@@ -61,7 +68,7 @@ const UserCard = ({ user, setLoading, users, setUsers }) => {
     setLoading(true)
     setShowPasswordConfirm(false)
     try {
-      const res = await axios.put(`${import.meta.env.VITE_BASE_URL}/api/users/${_id}/password`, { password: newPassword })
+      const res = await axios.put(`${import.meta.env.VITE_BASE_URL}/api/user/${_id}/password`, { password: newPassword })
       toast.success('Password changed successfully')
       setNewPassword('')
     } catch (error) {
@@ -76,7 +83,7 @@ const UserCard = ({ user, setLoading, users, setUsers }) => {
     <li className="bg-white border border-gray-200 rounded-lg p-5 hover:shadow-lg transition-shadow duration-200 flex flex-col h-full">
       {/* Header with Full Name */}
       <div className="mb-4 pb-4 border-b border-gray-200">
-        <h3 className="text-xl font-bold text-gray-900">{fullName}</h3>
+        <h3 className="text-xl font-bold text-gray-900">{capitalizeWords(displayName)}</h3>
         <p className="text-xs text-gray-500 mt-1">User ID: {_id}</p>
       </div>
 
@@ -85,7 +92,7 @@ const UserCard = ({ user, setLoading, users, setUsers }) => {
         {/* Username */}
         <div>
           <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Username</p>
-          <p className="text-base font-medium text-gray-900 mt-1">{userName}</p>
+          <p className="text-base font-medium text-gray-900 mt-1">{username}</p>
         </div>
 
         {/* Email */}
@@ -159,7 +166,7 @@ const UserCard = ({ user, setLoading, users, setUsers }) => {
             <p className="text-gray-600 mb-4">
               Are you sure you want to permanently delete this user?
             </p>
-            <p className="text-sm font-semibold text-gray-700 mb-2">{fullName}</p>
+            <p className="text-sm font-semibold text-gray-700 mb-2">{capitalizeWords(displayName)}</p>
             <p className="text-sm text-gray-600 mb-6">{email}</p>
 
             <div className="flex gap-3">
@@ -190,7 +197,7 @@ const UserCard = ({ user, setLoading, users, setUsers }) => {
             <p className="text-gray-600 mb-4">
               Are you sure you want to {user.disabled ? 'enable' : 'disable'} this user?
             </p>
-            <p className="text-sm font-semibold text-gray-700 mb-2">{fullName}</p>
+            <p className="text-sm font-semibold text-gray-700 mb-2">{capitalizeWords(displayName)}</p>
             <p className="text-sm text-gray-600 mb-6">{email}</p>
 
             <div className="flex gap-3">
@@ -221,7 +228,7 @@ const UserCard = ({ user, setLoading, users, setUsers }) => {
           <div className="bg-white rounded-lg shadow-xl p-6 max-w-sm mx-4" onClick={(e) => e.stopPropagation()}>
             <h3 className="text-lg font-bold text-gray-900 mb-4">Change Password</h3>
             <p className="text-gray-600 mb-4">
-              Enter a new password for {fullName}
+              Enter a new password for {capitalizeWords(displayName)}
             </p>
 
             <input

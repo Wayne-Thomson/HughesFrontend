@@ -36,24 +36,24 @@ const AddUserModal = ({ isOpen, onClose, onUserAdded }) => {
       const response = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/api/user/create`,
         {
-          displayName: formData.displayName,
-          username: formData.username,
-          email: formData.email,
-          password: formData.password,
-          admin: formData.isAdmin,
+          displayName: formData.displayName.trim().toLowerCase(),
+          username: formData.username.trim().toLowerCase(),
+          email: formData.email.trim().toLowerCase(),
+          password: formData.password.trim(),
+          isAdmin: formData.isAdmin,
         }
       )
 
-      if (response.status === 200) {
+      if (response.status === 200 || response.status === 201) {
         toast.success('User added successfully!')
-        onUserAdded()
+        // Pass the new user data to parent component
+        onUserAdded(response.data.user)
         resetModal()
       }
     } catch (error) {
       console.error('Error adding user:', error)
       const errorMessage = error.response?.data?.message || 'Failed to add user'
       toast.error(errorMessage)
-    } finally {
       setIsLoading(false)
     }
   }
@@ -67,6 +67,7 @@ const AddUserModal = ({ isOpen, onClose, onUserAdded }) => {
       isAdmin: false,
     })
     setShowConfirmation(false)
+    setIsLoading(false)
     onClose()
   }
 
@@ -207,8 +208,8 @@ const AddUserModal = ({ isOpen, onClose, onUserAdded }) => {
           {/* Footer */}
           <div className="flex gap-3 p-6 border-t border-gray-200">
             <button
-              onClick={handleCancel}
-              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition font-medium"
+              disabled={isLoading}
+              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition font-medium"
             >
               {showConfirmation ? 'Cancel' : 'Close'}
             </button>
@@ -217,7 +218,7 @@ const AddUserModal = ({ isOpen, onClose, onUserAdded }) => {
                 showConfirmation ? handleFinalConfirm : handleInitialSubmit
               }
               disabled={isLoading}
-              className="flex-1 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white rounded-lg transition font-medium"
+              className="flex-1 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 disabled:cursor-not-allowed text-white rounded-lg transition font-medium"
             >
               {isLoading ? 'Adding...' : showConfirmation ? 'Confirm' : 'Next'}
             </button>

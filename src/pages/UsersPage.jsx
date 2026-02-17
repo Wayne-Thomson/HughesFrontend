@@ -34,8 +34,12 @@ const UsersPage = () => {
     }
   }, [navigate])
 
-  const handleUserAdded = () => {
-    fetchUsers()
+  const handleUserAdded = (newUser) => {
+    if (newUser) {
+      // Add the new user to the users list
+      setUsers(prevUsers => [...prevUsers, newUser])
+      toast.success('User added to the list!')
+    }
   }
 
   const fetchUsers = useCallback(async () => {
