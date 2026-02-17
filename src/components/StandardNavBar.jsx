@@ -68,7 +68,7 @@ const StandardNavBar = ({ onOpenAddVehicleModal, onOpenAddUserModal }) => {
   return (
     <header className='sticky top-0 z-30 bg-gray-200 border-b border-gray-300 shadow-md'>
       <div className='mx-auto max-w-7xl px-4 py-4'>
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-4">
           {/* Logo/Title */}
           <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className='flex items-start md:items-center gap-1 md:gap-4 group hover:opacity-80 transition-opacity flex-col md:flex-row'>
             <div>
@@ -81,67 +81,70 @@ const StandardNavBar = ({ onOpenAddVehicleModal, onOpenAddUserModal }) => {
             </span>
           </button>
 
-          {/* Desktop Navigation */}
-          <nav className='hidden md:flex items-center gap-4'>
-            <Link to="/vehicles" className={`px-4 py-2 rounded-lg border transition-colors ${
-              isOnVehicles 
-                ? 'bg-gray-400 text-gray-900 border-gray-400' 
-                : 'text-gray-700 border-gray-300 hover:bg-gray-300'
-            }`}>
-              Active Vehicles
-            </Link>
-            <Link to="/deleted" className={`px-4 py-2 rounded-lg border transition-colors ${
-              isOnDeleted 
-                ? 'bg-gray-400 text-gray-900 border-gray-400' 
-                : 'text-gray-700 border-gray-300 hover:bg-gray-300'
-            }`}>
-              Deleted Vehicles
-            </Link>
-            {isAdmin() && (
-              <Link to="/users" className={`px-4 py-2 rounded-lg border transition-colors ${
-                isOnUsers 
+          {/* Navigation and Buttons Container */}
+          <div className='hidden md:flex items-center gap-4 flex-1'>
+            {/* Desktop Navigation */}
+            <nav className='flex items-center gap-4'>
+              <Link to="/vehicles" className={`px-4 py-2 rounded-lg border transition-colors whitespace-nowrap min-w-fit ${
+                isOnVehicles 
                   ? 'bg-gray-400 text-gray-900 border-gray-400' 
                   : 'text-gray-700 border-gray-300 hover:bg-gray-300'
               }`}>
-                Users
+                Active Vehicles
               </Link>
-            )}
-          </nav>
-
-          {/* Right Side - Add Vehicle/User Button (desktop) and Mobile Menu */}
-          <div className='flex items-center gap-2'>
-            {isOnVehicles && (
-              <button onClick={onOpenAddVehicleModal} className='hidden md:flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition-colors'>
-                <PlusIcon className='size-5'/>
-                <span>Add Vehicle</span>
-              </button>
-            )}
-
-            {isOnUsers && isAdmin() && (
-              <button onClick={onOpenAddUserModal} className='hidden md:flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition-colors'>
-                <PlusIcon className='size-5'/>
-                <span>Add User</span>
-              </button>
-            )}
-
-            {/* Logout Button */}
-            <button onClick={handleLogout} className='hidden md:flex items-center gap-2 text-gray-700 border border-gray-300 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors'>
-              <LogOut className='size-5'/>
-              <span>Logout</span>
-            </button>
-
-            {/* Mobile Menu Button */}
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className='md:hidden p-2 hover:bg-gray-300 rounded-lg transition-colors'
-            >
-              {mobileMenuOpen ? (
-                <X className='size-6 text-gray-900'/>
-              ) : (
-                <Menu className='size-6 text-gray-900'/>
+              <Link to="/deleted" className={`px-4 py-2 rounded-lg border transition-colors whitespace-nowrap min-w-fit ${
+                isOnDeleted 
+                  ? 'bg-gray-400 text-gray-900 border-gray-400' 
+                  : 'text-gray-700 border-gray-300 hover:bg-gray-300'
+              }`}>
+                Deleted Vehicles
+              </Link>
+              {isAdmin() && (
+                <Link to="/users" className={`px-4 py-2 rounded-lg border transition-colors whitespace-nowrap min-w-fit ${
+                  isOnUsers 
+                    ? 'bg-gray-400 text-gray-900 border-gray-400' 
+                    : 'text-gray-700 border-gray-300 hover:bg-gray-300'
+                }`}>
+                  Users
+                </Link>
               )}
-            </button>
+            </nav>
+
+            {/* Action Buttons */}
+            <div className='flex items-center gap-4 ml-auto'>
+              {isOnVehicles && (
+                <button onClick={onOpenAddVehicleModal} className='flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition-colors whitespace-nowrap'>
+                  <PlusIcon className='size-5 flex-shrink-0'/>
+                  <span>Add Vehicle</span>
+                </button>
+              )}
+
+              {isOnUsers && isAdmin() && (
+                <button onClick={onOpenAddUserModal} className='flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition-colors whitespace-nowrap'>
+                  <PlusIcon className='size-5 flex-shrink-0'/>
+                  <span>Add User</span>
+                </button>
+              )}
+
+              {/* Logout Button */}
+              <button onClick={handleLogout} className='flex items-center gap-2 text-gray-700 border border-gray-300 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors whitespace-nowrap'>
+                <LogOut className='size-5 flex-shrink-0'/>
+                <span>Logout</span>
+              </button>
+            </div>
           </div>
+
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className='md:hidden p-2 hover:bg-gray-300 rounded-lg transition-colors'
+          >
+            {mobileMenuOpen ? (
+              <X className='size-6 text-gray-900'/>
+            ) : (
+              <Menu className='size-6 text-gray-900'/>
+            )}
+          </button>
         </div>
 
         {/* Mobile Menu Overlay */}

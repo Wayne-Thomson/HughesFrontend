@@ -5,7 +5,7 @@ import toast from 'react-hot-toast'
 
 const AddUserModal = ({ isOpen, onClose, onUserAdded }) => {
   const [formData, setFormData] = useState({
-    name: '',
+    displayName: '',
     username: '',
     email: '',
     password: '',
@@ -23,7 +23,7 @@ const AddUserModal = ({ isOpen, onClose, onUserAdded }) => {
   }
 
   const handleInitialSubmit = () => {
-    if (!formData.name.trim() || !formData.username.trim() || !formData.email.trim() || !formData.password.trim()) {
+    if (!formData.displayName.trim() || !formData.username.trim() || !formData.email.trim() || !formData.password.trim()) {
       toast.error('Please fill in all required fields')
       return
     }
@@ -34,9 +34,9 @@ const AddUserModal = ({ isOpen, onClose, onUserAdded }) => {
     setIsLoading(true)
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/api/users/add`,
+        `${import.meta.env.VITE_BASE_URL}/api/user/create`,
         {
-          name: formData.name,
+          displayName: formData.displayName,
           username: formData.username,
           email: formData.email,
           password: formData.password,
@@ -60,7 +60,7 @@ const AddUserModal = ({ isOpen, onClose, onUserAdded }) => {
 
   const resetModal = () => {
     setFormData({
-      name: '',
+      displayName: '',
       username: '',
       email: '',
       password: '',
@@ -122,8 +122,8 @@ const AddUserModal = ({ isOpen, onClose, onUserAdded }) => {
                   </label>
                   <input
                     type="text"
-                    name="name"
-                    value={formData.name}
+                    name="displayName"
+                    value={formData.displayName}
                     onChange={handleInputChange}
                     placeholder="John Doe"
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
@@ -195,7 +195,7 @@ const AddUserModal = ({ isOpen, onClose, onUserAdded }) => {
                   Are you sure you want to add this user?
                 </p>
                 <div className="bg-gray-50 p-4 rounded-lg space-y-2 text-left">
-                  <p className="text-sm text-gray-900"><span className="font-semibold">Name:</span> {formData.name}</p>
+                  <p className="text-sm text-gray-900"><span className="font-semibold">Name:</span> {formData.displayName}</p>
                   <p className="text-sm text-gray-900"><span className="font-semibold">Username:</span> {formData.username}</p>
                   <p className="text-sm text-gray-900"><span className="font-semibold">Email:</span> {formData.email}</p>
                   <p className="text-sm text-gray-900"><span className="font-semibold">Admin:</span> {formData.isAdmin ? 'Yes' : 'No'}</p>
