@@ -8,7 +8,7 @@ const UserCard = ({ user, setLoading, users, setUsers }) => {
   const [showDisableConfirm, setShowDisableConfirm] = useState(false)
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false)
   const [newPassword, setNewPassword] = useState('')
-  const { _id, email, username, displayName, isAdmin } = user
+  const { _id, email, username, displayName, isAdmin, isActive } = user
 
   const capitalizeWords = (str) => {
     return str
@@ -45,8 +45,8 @@ const UserCard = ({ user, setLoading, users, setUsers }) => {
     setShowDisableConfirm(false)
     try {
       const res = await axios.put(`${import.meta.env.VITE_BASE_URL}/api/user/${_id}/toggle-disable`)
-      toast.success(`User ${user.disabled ? 'enabled' : 'disabled'} successfully`)
-      setUsers(users.map(u => u._id === _id ? { ...u, disabled: !u.disabled } : u))
+      toast.success(`User ${user.isActive === 'disabled' ? 'enabled' : 'disabled'} successfully`)
+      setUsers(users.map(u => u._id === _id ? { ...u, isActive: u.isActive === 'disabled' ? 'enabled' : 'disabled' } : u))
     } catch (error) {
       console.error('Error disabling user:', error)
       toast.error('Error disabling user')
@@ -120,11 +120,11 @@ const UserCard = ({ user, setLoading, users, setUsers }) => {
           <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</p>
           <div className="mt-1">
             <span className={`inline-block px-3 py-1 rounded text-xs font-semibold ${
-              user.disabled
+              isActive === 'disabled'
                 ? 'bg-red-100 text-red-700'
                 : 'bg-green-100 text-green-700'
             }`}>
-              {user.disabled ? 'Disabled' : 'Active'}
+              {isActive === 'disabled' ? 'Disabled' : 'Active'}
             </span>
           </div>
         </div>
@@ -142,12 +142,12 @@ const UserCard = ({ user, setLoading, users, setUsers }) => {
         <button
           onClick={handleDisableClick}
           className={`w-full font-medium py-2 px-4 rounded-lg transition-colors duration-200 ${
-            user.disabled
+            isActive === 'disabled'
               ? 'bg-green-100 hover:bg-green-200 text-green-700'
               : 'bg-yellow-100 hover:bg-yellow-200 text-yellow-700'
           }`}
         >
-          {user.disabled ? 'Enable User' : 'Disable User'}
+          {isActive === 'disabled' ? 'Enable User' : 'Disable User'}
         </button>
         <button
           onClick={handleDeleteClick}
@@ -192,10 +192,10 @@ const UserCard = ({ user, setLoading, users, setUsers }) => {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={() => setShowDisableConfirm(false)}>
           <div className="bg-white rounded-lg shadow-xl p-6 max-w-sm mx-4" onClick={(e) => e.stopPropagation()}>
             <h3 className="text-lg font-bold text-gray-900 mb-4">
-              {user.disabled ? 'Enable User' : 'Disable User'}
+              {isActive === 'disabled' ? 'Enable User' : 'Disable User'}
             </h3>
             <p className="text-gray-600 mb-4">
-              Are you sure you want to {user.disabled ? 'enable' : 'disable'} this user?
+              Are you sure you want to {isActive === 'disabled' ? 'enable' : 'disable'} this user?
             </p>
             <p className="text-sm font-semibold text-gray-700 mb-2">{capitalizeWords(displayName)}</p>
             <p className="text-sm text-gray-600 mb-6">{email}</p>
@@ -210,12 +210,12 @@ const UserCard = ({ user, setLoading, users, setUsers }) => {
               <button
                 onClick={handleConfirmDisable}
                 className={`flex-1 px-4 py-2 font-medium rounded-lg transition-colors text-white ${
-                  user.disabled
+                  isActive === 'disabled'
                     ? 'bg-green-600 hover:bg-green-700'
                     : 'bg-yellow-600 hover:bg-yellow-700'
                 }`}
               >
-                {user.disabled ? 'Enable' : 'Disable'}
+                {isActive === 'disabled' ? 'Enable' : 'Disable'}
               </button>
             </div>
           </div>

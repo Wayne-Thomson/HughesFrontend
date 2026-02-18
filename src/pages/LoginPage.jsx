@@ -45,9 +45,10 @@ const LoginPage = () => {
       localStorage.clear()
 
       // Make API call to login endpoint
-      const response = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/user/login`, {
+      const response = await axios.post(`${import.meta.env.VITE_BASE_URL}/api/user/login`, {
         email: email,
         password: password,
+        test: 'test' // Temporary field to test request body parsing
       });
 
       // If response is 200, save the response data to local storage
