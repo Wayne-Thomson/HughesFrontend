@@ -13,6 +13,11 @@ const StandardNavBar = ({ onOpenAddVehicleModal, onOpenAddUserModal }) => {
   const isOnUsers = location.pathname === '/users'
   const isOnDeleted = location.pathname === '/deleted'
 
+  // Capitalize first letter of each word
+  const capitalizeWords = (str) => {
+    return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')
+  }
+
   // Check if user is admin
   const isAdmin = () => {
     try {
@@ -23,6 +28,20 @@ const StandardNavBar = ({ onOpenAddVehicleModal, onOpenAddUserModal }) => {
     } catch (error) {
       console.error('Error checking admin status:', error)
       return false
+    }
+  }
+
+  // Get display name from localStorage
+  const getDisplayName = () => {
+    try {
+      const userData = localStorage.getItem('userData')
+      if (!userData) return ''
+      const parsedData = JSON.parse(userData)
+      const displayName = parsedData.user?.displayName || ''
+      return capitalizeWords(displayName)
+    } catch (error) {
+      console.error('Error getting display name:', error)
+      return ''
     }
   }
 
@@ -77,7 +96,7 @@ const StandardNavBar = ({ onOpenAddVehicleModal, onOpenAddUserModal }) => {
               </h1>
             </div>
             <span className='text-xs md:text-sm font-semibold text-indigo-600 bg-indigo-100 px-2 py-1 rounded whitespace-nowrap'>
-              {isOnVehicles ? 'Active Vehicles' : isOnDeleted ? 'Deleted Vehicles' : isOnUsers ? 'Users' : 'Home'}
+              {getDisplayName()}
             </span>
           </button>
 
