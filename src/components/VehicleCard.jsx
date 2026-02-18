@@ -296,9 +296,12 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
         isOpen={showNotesModal}
         onClose={() => setShowNotesModal(false)}
         vehicle={vehicle}
+        onVehicleUpdate={(updatedVehicle) => {
+          setVehicles(vehicles.map(v => v._id === updatedVehicle._id ? updatedVehicle : v))
+        }}
       />
     </li>
   )
-}
+};
 
-export default React.memo(VehicleCard)
+export default React.memo(VehicleCard);

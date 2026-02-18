@@ -3,37 +3,43 @@ import { X } from 'lucide-react'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 
-const VehicleNotesModal = ({ isOpen, onClose, vehicle }) => {
-  const [notes, setNotes] = useState('')
+const VehicleNotesModal = ({ isOpen, onClose, vehicle, onVehicleUpdate }) => {
+  const [customNotes, setCustomNotes] = useState('')
   const [originalNotes, setOriginalNotes] = useState('')
   const [showSaveConfirmation, setShowSaveConfirmation] = useState(false)
   const [showResetConfirmation, setShowResetConfirmation] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
+  console.log('VehicleNotesModal rendered with vehicle:', vehicle)
   useEffect(() => {
     if (isOpen && vehicle) {
-      const vehicleNotes = vehicle.notes || ''
-      setNotes(vehicleNotes)
+      const vehicleNotes = vehicle.customNotes || ''
+      setCustomNotes(vehicleNotes)
       setOriginalNotes(vehicleNotes)
     }
   }, [isOpen, vehicle])
 
   if (!isOpen || !vehicle) return null
 
-  const hasChanges = notes !== originalNotes
+  const hasChanges = customNotes !== originalNotes
 
   const handleSaveNotes = async () => {
     setIsLoading(true)
     try {
       const response = await axios.put(
-        `${import.meta.env.VITE_BASE_URL}/api/vehicle/${vehicle._id}`,
-        { notes }
+        `${import.meta.env.VITE_BASE_URL}/api/vehicle/updateNote/${vehicle._id}`,
+        { customNotes }
       )
 
       if (response.status === 200) {
         toast.success('Notes updated successfully!')
-        setOriginalNotes(notes)
+        setOriginalNotes(customNotes)
         setShowSaveConfirmation(false)
+        
+        // Update the vehicle in the parent's vehicles array
+        if (onVehicleUpdate) {
+          onVehicleUpdate({ ...vehicle, customNotes })
+        }
       }
     } catch (error) {
       console.error('Error updating notes:', error)
@@ -45,7 +51,7 @@ const VehicleNotesModal = ({ isOpen, onClose, vehicle }) => {
   }
 
   const handleResetNotes = () => {
-    setNotes(originalNotes)
+    setCustomNotes(originalNotes)
     setShowResetConfirmation(false)
     toast.success('Notes reset to saved version')
   }
@@ -82,20 +88,20 @@ const VehicleNotesModal = ({ isOpen, onClose, vehicle }) => {
             {!showSaveConfirmation && !showResetConfirmation ? (
               <>
                 <textarea
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
+                  value={customNotes}
+                  onChange={(e) => setCustomNotes(e.target.value)}
                   placeholder="Enter vehicle notes here..."
                   className="w-full h-64 px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition resize-none"
                 />
                 <p className="text-xs text-gray-500 mt-2">
-                  {notes.length} characters
+                  {customNotes.length} characters
                 </p>
               </>
             ) : showSaveConfirmation ? (
               <div className="text-center">
                 <p className="text-gray-900 font-semibold mb-4">Confirm saving notes?</p>
                 <div className="bg-gray-50 p-4 rounded-lg max-h-48 overflow-y-auto mb-4">
-                  <p className="text-gray-700 text-left whitespace-pre-wrap">{notes}</p>
+                  <p className="text-gray-700 text-left whitespace-pre-wrap">{customNotes}</p>
                 </div>
               </div>
             ) : (
