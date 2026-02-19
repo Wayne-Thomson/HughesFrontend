@@ -1,8 +1,8 @@
 import React from 'react';
 import StandardNavBar from '../components/StandardNavBar';
 import VehicleCard from '../components/VehicleCard';
-import RateLimitedUI from '../components/RateLimitedUI'; 
-import axios from 'axios'; 
+import RateLimitedUI from '../components/RateLimitedUI';
+import apiClient from '../services/apiClient.js'; 
 import toast from 'react-hot-toast';
 import { ArrowUp, ArrowDown } from 'lucide-react';
 
@@ -31,7 +31,7 @@ const RemovedVehicleList = () => {
           toast.loading('Loading vehicles...', { id: 'fetchVehicles' });
             try {
                 // Request the list of vehicles from the backend API endpoint and update state with the response data
-                const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/vehicle/deletedvehicles`);
+                const res = await apiClient.get('/api/vehicle/deletedvehicles');
                 // Log the fetched vehicles to the console for debugging and set the vehicles state variable with the response data, or an empty array if no data is returned
                 setVehicles(res?.data?.vehicles || []);
                 // If the request is successful, reset the rateLimited state to false in case it was previously set to true due to a 429 error

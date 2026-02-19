@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import axios from 'axios'
+import apiClient from '../services/apiClient.js'
 import toast from 'react-hot-toast';
 import VehicleDetailsModal from './VehicleDetailsModal'
 import VehicleNotesModal from './VehicleNotesModal'
@@ -66,7 +66,7 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
     if (deleteButtonText === 'Delete') {
         try {
             console.log(`Deleting vehicle with registration: ${registration}, hardDelete: ${hardDeleteChecked}`);
-            const res = await axios.delete(`${import.meta.env.VITE_BASE_URL}/api/vehicle/delete/${_id}`, { data: { hardDelete: hardDeleteChecked } });
+            const res = await apiClient.delete(`/api/vehicle/delete/${_id}`, { data: { hardDelete: hardDeleteChecked } });
             toast.success(hardDeleteChecked ? 'Vehicle permanently deleted successfully' : 'Vehicle deleted successfully');
             setVehicles(vehicles.filter(v => v._id !== _id));
         } catch (error) {
@@ -77,7 +77,7 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
         }
     } else {
         try {
-            const res = await axios.put(`${import.meta.env.VITE_BASE_URL}/api/vehicle/restore/${_id}`);
+            const res = await apiClient.put(`/api/vehicle/restore/${_id}`);
             toast.success('Vehicle restored successfully')
             setVehicles(vehicles.filter(v => v._id !== _id));
         } catch (error) {
@@ -102,7 +102,7 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
     setLoading(true);
     setShowPermanentDeleteConfirmation(false)
     try {
-        const res = await axios.delete(`${import.meta.env.VITE_BASE_URL}/api/vehicle/delete/${_id}`, { data: { hardDelete: true } });
+        const res = await apiClient.delete(`/api/vehicle/delete/${_id}`, { data: { hardDelete: true } });
         toast.success('Vehicle permanently deleted successfully')
         setVehicles(vehicles.filter(v => v._id !== _id));
     } catch (error) {

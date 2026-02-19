@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router'
 import StandardNavBar from '../components/StandardNavBar'
 import AddUserModal from '../components/AddUserModal'
 import UserCard from '../components/UserCard'
-import axios from 'axios'
+import apiClient from '../services/apiClient.js'
 import toast from 'react-hot-toast'
 
 const UsersPage = () => {
@@ -46,7 +46,7 @@ const UsersPage = () => {
     setLoading(true)
     toast.loading('Loading users...', { id: 'fetchUsers' });
     try {
-        const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/user/listall`);
+        const res = await apiClient.get('/api/user/listall');
         setUsers(res?.data?.users || []);
         setRateLimited(false);
         toast.dismiss('fetchUsers');

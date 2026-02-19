@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { X } from 'lucide-react'
-import axios from 'axios'
+import apiClient from '../services/apiClient.js'
 import toast from 'react-hot-toast'
 
 const AddVehicleModal = ({ isOpen, onClose, onVehicleAdded }) => {
@@ -28,8 +28,8 @@ const AddVehicleModal = ({ isOpen, onClose, onVehicleAdded }) => {
         [identifierType]: vehicleIdentifier,
       }
 
-      const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/api/vehicle/add`,
+      const response = await apiClient.post(
+        `/api/vehicle/add`,
         payload
       )
 

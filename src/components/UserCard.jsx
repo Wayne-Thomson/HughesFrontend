@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import axios from 'axios'
+import apiClient from '../services/apiClient.js'
 import toast from 'react-hot-toast'
 import { Lock, Trash2 } from 'lucide-react'
 
@@ -25,7 +25,7 @@ const UserCard = ({ user, setLoading, users, setUsers }) => {
     setLoading(true)
     setShowDeleteConfirm(false)
     try {
-      const res = await axios.delete(`${import.meta.env.VITE_BASE_URL}/api/user/${_id}`)
+      const res = await apiClient.delete(`/api/user/${_id}`)
       toast.success('User deleted successfully')
       setUsers(users.filter(u => u._id !== _id))
     } catch (error) {
@@ -44,7 +44,7 @@ const UserCard = ({ user, setLoading, users, setUsers }) => {
     setLoading(true)
     setShowDisableConfirm(false)
     try {
-      const res = await axios.put(`${import.meta.env.VITE_BASE_URL}/api/user/${_id}/toggle-disable`)
+      const res = await apiClient.put(`/api/user/${_id}/toggle-disable`)
       toast.success(`User ${user.isActive === 'disabled' ? 'enabled' : 'disabled'} successfully`)
       setUsers(users.map(u => u._id === _id ? { ...u, isActive: u.isActive === 'disabled' ? 'enabled' : 'disabled' } : u))
     } catch (error) {
@@ -68,7 +68,7 @@ const UserCard = ({ user, setLoading, users, setUsers }) => {
     setLoading(true)
     setShowPasswordConfirm(false)
     try {
-      const res = await axios.put(`${import.meta.env.VITE_BASE_URL}/api/user/${_id}/password`, { password: newPassword })
+      const res = await apiClient.put(`/api/user/${_id}/password`, { password: newPassword })
       toast.success('Password changed successfully')
       setNewPassword('')
     } catch (error) {

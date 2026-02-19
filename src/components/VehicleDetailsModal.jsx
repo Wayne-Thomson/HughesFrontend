@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { X, ChevronDown, ChevronUp } from 'lucide-react'
-import axios from 'axios'
+import apiClient from '../services/apiClient.js'
 import toast from 'react-hot-toast'
 
 const VehicleDetailsModal = ({ isOpen, onClose, vehicle }) => {
@@ -16,8 +16,8 @@ const VehicleDetailsModal = ({ isOpen, onClose, vehicle }) => {
   const handleSaveVin = async () => {
     setIsLoading(true)
     try {
-      const response = await axios.put(
-        `${import.meta.env.VITE_BASE_URL}/api/vehicle/${vehicle._id}`,
+      const response = await apiClient.put(
+        `/api/vehicle/${vehicle._id}`,
         { vin }
       )
 
@@ -37,8 +37,8 @@ const VehicleDetailsModal = ({ isOpen, onClose, vehicle }) => {
   const handleValidateVin = async () => {
     setIsLoading(true)
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/api/vehicle/validate-vin`,
+      const response = await apiClient.post(
+        `/api/vehicle/validate-vin`,
         { vin, registrationNumber: vehicle.registration }
       )
 

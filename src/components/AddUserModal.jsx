@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { X } from 'lucide-react'
-import axios from 'axios'
+import apiClient from '../services/apiClient.js'
 import toast from 'react-hot-toast'
 
 const AddUserModal = ({ isOpen, onClose, onUserAdded }) => {
@@ -33,8 +33,8 @@ const AddUserModal = ({ isOpen, onClose, onUserAdded }) => {
   const handleFinalConfirm = async () => {
     setIsLoading(true)
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/api/user/create`,
+      const response = await apiClient.post(
+        `/api/user/create`,
         {
           displayName: formData.displayName.trim().toLowerCase(),
           username: formData.username.trim().toLowerCase(),

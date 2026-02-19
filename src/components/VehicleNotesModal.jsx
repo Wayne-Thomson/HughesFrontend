@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { X } from 'lucide-react'
-import axios from 'axios'
+import apiClient from '../services/apiClient.js'
 import toast from 'react-hot-toast'
 
 const VehicleNotesModal = ({ isOpen, onClose, vehicle, onVehicleUpdate }) => {
@@ -10,7 +10,6 @@ const VehicleNotesModal = ({ isOpen, onClose, vehicle, onVehicleUpdate }) => {
   const [showResetConfirmation, setShowResetConfirmation] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
-  console.log('VehicleNotesModal rendered with vehicle:', vehicle)
   useEffect(() => {
     if (isOpen && vehicle) {
       const vehicleNotes = vehicle.customNotes || ''
@@ -26,8 +25,8 @@ const VehicleNotesModal = ({ isOpen, onClose, vehicle, onVehicleUpdate }) => {
   const handleSaveNotes = async () => {
     setIsLoading(true)
     try {
-      const response = await axios.put(
-        `${import.meta.env.VITE_BASE_URL}/api/vehicle/updateNote/${vehicle._id}`,
+      const response = await apiClient.put(
+        `/api/vehicle/updateNote/${vehicle._id}`,
         { customNotes }
       )
 

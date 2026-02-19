@@ -2,7 +2,7 @@ import React, { useCallback, useMemo } from 'react'
 import StandardNavBar from '../components/StandardNavBar.jsx';
 import RateLimitedUI from '../components/RateLimitedUI.jsx';
 import AddVehicleModal from '../components/AddVehicleModal.jsx';
-import axios from 'axios';
+import apiClient from '../services/apiClient.js';
 import toast from 'react-hot-toast';
 import VehicleCard from '../components/VehicleCard.jsx';
 import { ArrowUp, ArrowDown } from 'lucide-react';
@@ -48,7 +48,7 @@ const VehicleListPage = () => {
     const fetchVehicles = useCallback(async () => {
         toast.loading('Loading vehicles...', { id: 'fetchVehicles' });
         try {
-            const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/api/vehicle/listall`);
+            const res = await apiClient.get('/api/vehicle/listall');
             setVehicles(res?.data?.vehicles || []);
             setRateLimited(false);
             toast.dismiss('fetchVehicles');
