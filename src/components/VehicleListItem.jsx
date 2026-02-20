@@ -106,7 +106,7 @@ const VehicleListItem = ({ vehicle, deleteButtonText = 'Delete', deleteButtonCol
 
   return (
     <>
-      <tr className="border-b border-gray-200 hover:bg-gray-50 transition-colors">
+      <tr className="border-b border-gray-200 bg-white hover:bg-gray-50 transition-colors">
         {/* Registration & VIN */}
         <td className="px-6 py-4 whitespace-nowrap">
           <div className="bg-yellow-300 border-2 border-yellow-400 px-2 py-1 rounded inline-block">
