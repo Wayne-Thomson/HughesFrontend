@@ -4,56 +4,11 @@ import apiClient from '../services/apiClient.js'
 import toast from 'react-hot-toast'
 
 const VehicleDetailsModal = ({ isOpen, onClose, vehicle }) => {
-  const [vin, setVin] = useState(vehicle?.vin || '')
   const [expandedMot, setExpandedMot] = useState(null)
   const [expandedDefects, setExpandedDefects] = useState({})
-  const [showVinConfirmation, setShowVinConfirmation] = useState(false)
-  const [showValidateConfirmation, setShowValidateConfirmation] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
   if (!isOpen || !vehicle) return null
-
-  const handleSaveVin = async () => {
-    setIsLoading(true)
-    try {
-      const response = await apiClient.put(
-        `/api/vehicle/${vehicle._id}`,
-        { vin }
-      )
-
-      if (response.status === 200) {
-        toast.success('VIN updated successfully!')
-        setShowVinConfirmation(false)
-      }
-    } catch (error) {
-      console.error('Error updating VIN:', error)
-      const errorMessage = error.response?.data?.message || 'Failed to update VIN'
-      toast.error(errorMessage)
-    } finally {
-      setIsLoading(false)
-    }
-  }
-
-  const handleValidateVin = async () => {
-    setIsLoading(true)
-    try {
-      const response = await apiClient.post(
-        `/api/vehicle/validate-vin`,
-        { vin, registrationNumber: vehicle.registration }
-      )
-
-      if (response.status === 200) {
-        toast.success('VIN validation successful!')
-        setShowValidateConfirmation(false)
-      }
-    } catch (error) {
-      console.error('Error validating VIN:', error)
-      const errorMessage = error.response?.data?.message || 'VIN validation failed'
-      toast.error(errorMessage)
-    } finally {
-      setIsLoading(false)
-    }
-  }
 
   const toggleMotExpanded = (index) => {
     setExpandedMot(expandedMot === index ? null : index)
@@ -100,64 +55,15 @@ const VehicleDetailsModal = ({ isOpen, onClose, vehicle }) => {
 
           {/* Content */}
           <div className="p-6 space-y-6">
-            {/* VIN Section */}
-            <div className="border rounded-lg p-4 bg-gray-50">
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">VIN Number</h3>
-              {!showVinConfirmation ? (
-                <>
-                  <input
-                    type="text"
-                    value={vin}
-                    onChange={(e) => setVin(e.target.value)}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition mb-3"
-                    placeholder="Enter VIN"
-                  />
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => setShowVinConfirmation(true)}
-                      disabled={isLoading}
-                      className="flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white rounded-lg transition font-medium"
-                    >
-                      Save VIN
-                    </button>
-                    <button
-                      onClick={() => setShowValidateConfirmation(true)}
-                      disabled={isLoading}
-                      className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white rounded-lg transition font-medium"
-                    >
-                      Validate VIN
-                    </button>
-                  </div>
-                </>
-              ) : (
-                <div className="text-center">
-                  <p className="text-gray-900 font-semibold mb-3">Confirm saving VIN?</p>
-                  <p className="text-gray-700 mb-4">{vin}</p>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => setShowVinConfirmation(false)}
-                      disabled={isLoading}
-                      className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition font-medium"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      onClick={handleSaveVin}
-                      disabled={isLoading}
-                      className="flex-1 px-4 py-2 bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white rounded-lg transition font-medium"
-                    >
-                      {isLoading ? 'Saving...' : 'Confirm'}
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-
             {/* Basic Vehicle Information */}
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <p className="text-sm font-semibold text-gray-500 uppercase">Registration</p>
                 <p className="text-gray-900 mt-1">{vehicle.registration || 'N/A'}</p>
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-gray-500 uppercase">VIN</p>
+                <p className="text-gray-900 mt-1 uppercase">{vehicle.vin || 'N/A'}</p>
               </div>
               <div>
                 <p className="text-sm font-semibold text-gray-500 uppercase">Make</p>
@@ -284,33 +190,7 @@ const VehicleDetailsModal = ({ isOpen, onClose, vehicle }) => {
               </div>
             )}
 
-            {showValidateConfirmation && (
-              <div className="fixed inset-0 flex items-center justify-center z-50 p-4 bg-black bg-opacity-50">
-                <div className="bg-white rounded-lg shadow-xl p-6 max-w-sm w-full">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-3">Confirm VIN Validation</h3>
-                  <p className="text-gray-700 mb-4">
-                    Are you sure you want to validate this VIN against the registration?
-                  </p>
-                  <p className="text-gray-900 font-semibold mb-4">{vin}</p>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => setShowValidateConfirmation(false)}
-                      disabled={isLoading}
-                      className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition font-medium"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      onClick={handleValidateVin}
-                      disabled={isLoading}
-                      className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white rounded-lg transition font-medium"
-                    >
-                      {isLoading ? 'Validating...' : 'Confirm'}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
+
           </div>
         </div>
       </div>

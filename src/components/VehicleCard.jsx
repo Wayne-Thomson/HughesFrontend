@@ -124,7 +124,7 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
         <div>
           <div className="bg-yellow-300 border-2 border-yellow-400 px-3 py-1 rounded inline-block mb-2">
             <h3 className="text-lg font-bold text-gray-700 font-mono tracking-wider">{registration}</h3>
-            <p className="text-sm text-gray-700 font-mono">{vin}</p>
+            <p className="text-sm text-gray-700 font-mono uppercase">{vin}</p>
           </div>
           <p className="text-sm text-gray-600 mt-1">
             {make} {model}

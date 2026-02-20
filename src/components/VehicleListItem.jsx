@@ -111,7 +111,7 @@ const VehicleListItem = ({ vehicle, deleteButtonText = 'Delete', deleteButtonCol
         <td className="px-6 py-4 whitespace-nowrap">
           <div className="bg-yellow-300 border-2 border-yellow-400 px-2 py-1 rounded inline-block">
             <p className="text-sm font-bold text-gray-700 font-mono tracking-wider">{registration}</p>
-            <p className="text-xs text-gray-700 font-mono">{vin}</p>
+            <p className="text-xs text-gray-700 font-mono uppercase">{vin}</p>
           </div>
         </td>
 

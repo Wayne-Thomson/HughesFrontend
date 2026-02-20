@@ -130,9 +130,9 @@ const VehicleListPage = () => {
     <div className='min-h-screen'>
       <StandardNavBar onOpenAddVehicleModal={() => setShowAddVehicleModal(true)} />
       {/* Filter Bar */}
-      <div className={`md:sticky md:top-16 md:z-20 py-2 transition-all ${isScrolled ? 'md:bg-black md:border-b md:border-gray-200 md:shadow-sm' : ''}`}>
+      <div className={`md:sticky md:top-16 md:z-20 py-4 transition-all ${isScrolled ? 'md:bg-black md:border-b md:border-gray-200 md:shadow-sm' : ''}`}>
         <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-2">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-4">
             {/* Search */}
             <div>
               <label htmlFor="search" className={`block text-sm font-medium text-gray-400 mb-1 transition-all ${isScrolled ? 'hidden md:block' : ''}`}>
