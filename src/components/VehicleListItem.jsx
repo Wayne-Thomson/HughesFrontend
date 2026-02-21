@@ -1,15 +1,11 @@
 import React, { useState } from 'react'
 import apiClient from '../services/apiClient.js'
 import toast from 'react-hot-toast';
-import VehicleDetailsModal from './VehicleDetailsModal'
-import VehicleNotesModal from './VehicleNotesModal'
 
-const VehicleListItem = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor = 'red', isDeleted = false, setLoading, vehicles, setVehicles }) => {
+const VehicleListItem = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor = 'red', isDeleted = false, setLoading, vehicles, setVehicles, onShowDetails, onShowNotes }) => {
   const [showConfirmation, setShowConfirmation] = useState(false)
   const [hardDeleteChecked, setHardDeleteChecked] = useState(false)
   const [showPermanentDeleteConfirmation, setShowPermanentDeleteConfirmation] = useState(false)
-  const [showDetailsModal, setShowDetailsModal] = useState(false)
-  const [showNotesModal, setShowNotesModal] = useState(false)
   const {
     createdAt: dateAdded,
     registration,
@@ -109,9 +105,9 @@ const VehicleListItem = ({ vehicle, deleteButtonText = 'Delete', deleteButtonCol
       <tr className="border-b border-gray-200 bg-white hover:bg-gray-50 transition-colors">
         {/* Registration & VIN */}
         <td className="px-6 py-4 whitespace-nowrap">
-          <div className="bg-yellow-300 border-2 border-yellow-400 px-2 py-1 rounded inline-block">
-            <p className="text-sm font-bold text-gray-700 font-mono tracking-wider">{registration}</p>
-            <p className="text-xs text-gray-700 font-mono uppercase">{vin}</p>
+          <div className="bg-yellow-300 border-2 border-yellow-400 px-2 py-1 rounded inline-block w-fit">
+            <p className="text-sm font-bold text-gray-700 font-mono tabular-nums">{registration}</p>
+            <p className="text-sm text-gray-700 font-mono tabular-nums uppercase" style={{ minWidth: '18ch', display: 'block' }}>{vin}</p>
           </div>
         </td>
 
@@ -153,14 +149,14 @@ const VehicleListItem = ({ vehicle, deleteButtonText = 'Delete', deleteButtonCol
         <td className="px-6 py-4 whitespace-nowrap">
           <div className="flex gap-2">
             <button 
-              onClick={() => setShowDetailsModal(true)}
+              onClick={() => onShowDetails(vehicle)}
               className="px-3 py-1 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded transition-colors"
               title="View Details"
             >
               Details
             </button>
             <button 
-              onClick={() => setShowNotesModal(true)}
+              onClick={() => onShowNotes(vehicle)}
               className="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded transition-colors"
               title="View/Update Notes"
             >
@@ -269,21 +265,6 @@ const VehicleListItem = ({ vehicle, deleteButtonText = 'Delete', deleteButtonCol
           </div>
         </div>
       )}
-
-      <VehicleDetailsModal
-        isOpen={showDetailsModal}
-        onClose={() => setShowDetailsModal(false)}
-        vehicle={vehicle}
-      />
-
-      <VehicleNotesModal
-        isOpen={showNotesModal}
-        onClose={() => setShowNotesModal(false)}
-        vehicle={vehicle}
-        onVehicleUpdate={(updatedVehicle) => {
-          setVehicles(vehicles.map(v => v._id === updatedVehicle._id ? updatedVehicle : v))
-        }}
-      />
     </>
   )
 };

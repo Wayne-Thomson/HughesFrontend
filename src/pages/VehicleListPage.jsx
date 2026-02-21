@@ -2,6 +2,8 @@ import React, { useCallback, useMemo } from 'react'
 import StandardNavBar from '../components/StandardNavBar.jsx';
 import RateLimitedUI from '../components/RateLimitedUI.jsx';
 import AddVehicleModal from '../components/AddVehicleModal.jsx';
+import VehicleDetailsModal from '../components/VehicleDetailsModal.jsx';
+import VehicleNotesModal from '../components/VehicleNotesModal.jsx';
 import apiClient from '../services/apiClient.js';
 import toast from 'react-hot-toast';
 import VehicleCard from '../components/VehicleCard.jsx';
@@ -20,6 +22,10 @@ const VehicleListPage = () => {
     const [ showAddVehicleModal, setShowAddVehicleModal ] = React.useState(false);
     const [ itemsToShow, setItemsToShow ] = React.useState(20);
     const [ layoutView, setLayoutView ] = React.useState('grid');
+    const [ showDetailsModal, setShowDetailsModal ] = React.useState(false);
+    const [ selectedDetailsVehicle, setSelectedDetailsVehicle ] = React.useState(null);
+    const [ showNotesModal, setShowNotesModal ] = React.useState(false);
+    const [ selectedNotesVehicle, setSelectedNotesVehicle ] = React.useState(null);
 
     React.useEffect(() => {
         let throttleTimer = null;
@@ -125,6 +131,28 @@ const VehicleListPage = () => {
             }
         });
     }, [vehicles, selectedMake, searchTerm, orderBy, sortDirection]);
+
+    // Callbacks for Details Modal
+    const handleShowDetails = useCallback((vehicle) => {
+        setSelectedDetailsVehicle(vehicle);
+        setShowDetailsModal(true);
+    }, []);
+
+    const handleCloseDetails = useCallback(() => {
+        setShowDetailsModal(false);
+        setSelectedDetailsVehicle(null);
+    }, []);
+
+    // Callbacks for Notes Modal
+    const handleShowNotes = useCallback((vehicle) => {
+        setSelectedNotesVehicle(vehicle);
+        setShowNotesModal(true);
+    }, []);
+
+    const handleCloseNotes = useCallback(() => {
+        setShowNotesModal(false);
+        setSelectedNotesVehicle(null);
+    }, []);
 
   return (
     <div className='min-h-screen'>
@@ -262,7 +290,15 @@ const VehicleListPage = () => {
                   </thead>
                   <tbody>
                     {filteredVehicles.slice(0, itemsToShow).map(vehicle => (
-                      <VehicleListItem key={vehicle._id} vehicle={vehicle} setLoading={setLoading} vehicles={vehicles} setVehicles={setVehicles} />
+                      <VehicleListItem 
+                        key={vehicle._id} 
+                        vehicle={vehicle} 
+                        setLoading={setLoading} 
+                        vehicles={vehicles} 
+                        setVehicles={setVehicles}
+                        onShowDetails={handleShowDetails}
+                        onShowNotes={handleShowNotes}
+                      />
                     ))}
                   </tbody>
                 </table>
@@ -291,6 +327,25 @@ const VehicleListPage = () => {
         onClose={() => setShowAddVehicleModal(false)}
         onVehicleAdded={fetchVehicles}
       />
+
+      {selectedDetailsVehicle && (
+        <VehicleDetailsModal
+          isOpen={showDetailsModal}
+          onClose={handleCloseDetails}
+          vehicle={selectedDetailsVehicle}
+        />
+      )}
+
+      {selectedNotesVehicle && (
+        <VehicleNotesModal
+          isOpen={showNotesModal}
+          onClose={handleCloseNotes}
+          vehicle={selectedNotesVehicle}
+          onVehicleUpdate={(updatedVehicle) => {
+            setVehicles(vehicles.map(v => v._id === updatedVehicle._id ? updatedVehicle : v))
+          }}
+        />
+      )}
       
     </div>
   )

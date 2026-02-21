@@ -122,9 +122,9 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
       {/* Header with Registration and Date Stock */}
       <div className="flex justify-between items-start mb-4 gap-4">
         <div>
-          <div className="bg-yellow-300 border-2 border-yellow-400 px-3 py-1 rounded inline-block mb-2">
-            <h3 className="text-lg font-bold text-gray-700 font-mono tracking-wider">{registration}</h3>
-            <p className="text-sm text-gray-700 font-mono uppercase">{vin}</p>
+          <div className="bg-yellow-300 border-2 border-yellow-400 px-4 py-2 rounded inline-block mb-2 w-fit">
+            <h3 className="text-base font-bold text-gray-700 font-mono tabular-nums">{registration}</h3>
+            <p className="text-base text-gray-700 font-mono tabular-nums uppercase" style={{ minWidth: '18ch', display: 'block' }}>{vin}</p>
           </div>
           <p className="text-sm text-gray-600 mt-1">
             {make} {model}

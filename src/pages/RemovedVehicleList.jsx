@@ -2,6 +2,8 @@ import React from 'react';
 import StandardNavBar from '../components/StandardNavBar';
 import VehicleCard from '../components/VehicleCard';
 import VehicleListItem from '../components/VehicleListItem';
+import VehicleDetailsModal from '../components/VehicleDetailsModal';
+import VehicleNotesModal from '../components/VehicleNotesModal';
 import RateLimitedUI from '../components/RateLimitedUI';
 import apiClient from '../services/apiClient.js'; 
 import toast from 'react-hot-toast';
@@ -17,6 +19,10 @@ const RemovedVehicleList = () => {
     const [sortDirection, setSortDirection] = React.useState('desc');
     const [ isScrolled, setIsScrolled ] = React.useState(false);
     const [ layoutView, setLayoutView ] = React.useState('grid');
+    const [ showDetailsModal, setShowDetailsModal ] = React.useState(false);
+    const [ selectedDetailsVehicle, setSelectedDetailsVehicle ] = React.useState(null);
+    const [ showNotesModal, setShowNotesModal ] = React.useState(false);
+    const [ selectedNotesVehicle, setSelectedNotesVehicle ] = React.useState(null);
 
     React.useEffect(() => {
         const handleScroll = () => {
@@ -104,6 +110,28 @@ const RemovedVehicleList = () => {
                 return 0;
         }
     });
+
+    // Callbacks for Details Modal
+    const handleShowDetails = (vehicle) => {
+        setSelectedDetailsVehicle(vehicle);
+        setShowDetailsModal(true);
+    };
+
+    const handleCloseDetails = () => {
+        setShowDetailsModal(false);
+        setSelectedDetailsVehicle(null);
+    };
+
+    // Callbacks for Notes Modal
+    const handleShowNotes = (vehicle) => {
+        setSelectedNotesVehicle(vehicle);
+        setShowNotesModal(true);
+    };
+
+    const handleCloseNotes = () => {
+        setShowNotesModal(false);
+        setSelectedNotesVehicle(null);
+    };
 
   return (
     <div className='min-h-screen'>
@@ -241,7 +269,18 @@ const RemovedVehicleList = () => {
                   </thead>
                   <tbody>
                     {filteredVehicles.map(vehicle => (
-                      <VehicleListItem key={vehicle._id} vehicle={vehicle} deleteButtonText="Restore" deleteButtonColor="green" isDeleted={true} setLoading={setLoading} vehicles={vehicles} setVehicles={setVehicles} />
+                      <VehicleListItem 
+                        key={vehicle._id} 
+                        vehicle={vehicle} 
+                        deleteButtonText="Restore" 
+                        deleteButtonColor="green" 
+                        isDeleted={true} 
+                        setLoading={setLoading} 
+                        vehicles={vehicles} 
+                        setVehicles={setVehicles}
+                        onShowDetails={handleShowDetails}
+                        onShowNotes={handleShowNotes}
+                      />
                     ))}
                   </tbody>
                 </table>
@@ -257,6 +296,25 @@ const RemovedVehicleList = () => {
       </div>
 
       {rateLimited && <RateLimitedUI />}
+
+      {selectedDetailsVehicle && (
+        <VehicleDetailsModal
+          isOpen={showDetailsModal}
+          onClose={handleCloseDetails}
+          vehicle={selectedDetailsVehicle}
+        />
+      )}
+
+      {selectedNotesVehicle && (
+        <VehicleNotesModal
+          isOpen={showNotesModal}
+          onClose={handleCloseNotes}
+          vehicle={selectedNotesVehicle}
+          onVehicleUpdate={(updatedVehicle) => {
+            setVehicles(vehicles.map(v => v._id === updatedVehicle._id ? updatedVehicle : v))
+          }}
+        />
+      )}
       
     </div>
   )
