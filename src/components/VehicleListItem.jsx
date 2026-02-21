@@ -132,7 +132,7 @@ const VehicleListItem = ({ vehicle, deleteButtonText = 'Delete', deleteButtonCol
         <td className="px-6 py-4 whitespace-nowrap">
           <p className="text-sm font-medium text-gray-900">{engineSize || 'N/A'} cc</p>
           {vehicle.Performance?.Power?.Bhp && (
-            <p className="text-xs text-gray-600">{vehicle.Performance.Power.Bhp} bhp</p>
+            <p className="text-xs text-gray-600">{vehicle.Performance.Power.Bhp} Bhp</p>
           )}
         </td>
 
