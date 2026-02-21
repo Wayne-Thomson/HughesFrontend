@@ -137,7 +137,7 @@ const RemovedVehicleList = () => {
     <div className='min-h-screen'>
       <StandardNavBar />        
       {/* Filter Bar */}
-      <div className={`md:sticky md:top-16 md:z-20 py-4 transition-all ${isScrolled ? 'md:bg-black md:border-b md:border-gray-200 md:shadow-sm' : ''}`}>
+      <div className={`md:sticky md:top-16 md:z-20 py-2 transition-all ${isScrolled ? 'md:bg-black md:border-b md:border-gray-200 md:shadow-sm' : ''}`}>
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-4">
             {/* Search */}
@@ -202,7 +202,7 @@ const RemovedVehicleList = () => {
           </div>
 
           {/* Layout Toggle */}
-          <div className="flex gap-2">
+          <div className="flex gap-1">
             <button
               onClick={() => setLayoutView('grid')}
               className={`px-4 py-2 rounded-lg font-medium flex items-center gap-2 transition-all ${
@@ -241,7 +241,7 @@ const RemovedVehicleList = () => {
         </>
       )}
 
-      <div className="max-w-7xl mx-auto p-4 mt-6">
+      <div className="max-w-7xl mx-auto px-4 py-0 mt-0">
         {(filteredVehicles.length > 0) && (!rateLimited) && (
           <>
             {layoutView === 'grid' ? (
