@@ -238,7 +238,7 @@ const ViewImagesModal = ({ isOpen, onClose, vehicle }) => {
 
       {/* Modal */}
       <div className="fixed inset-0 flex items-center justify-center z-50 p-4" onClick={!isLoading && !isUploading ? onClose : undefined}>
-        <div className="bg-white rounded-lg shadow-xl w-full max-w-2xl" onClick={(e) => e.stopPropagation()}>
+        <div className="bg-white rounded-lg shadow-xl w-full max-w-6xl h-auto max-h-[90vh] flex flex-col" onClick={(e) => e.stopPropagation()}>
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-gray-200">
             <div>
@@ -257,7 +257,7 @@ const ViewImagesModal = ({ isOpen, onClose, vehicle }) => {
           </div>
 
           {/* Content */}
-          <div className="p-6">
+          <div className="p-6 flex-1 overflow-y-auto">
             {isLoading ? (
               <div className="flex justify-center items-center py-12">
                 <div className="animate-spin rounded-full h-16 w-16 border-4 border-gray-300 border-t-indigo-600"></div>
@@ -268,7 +268,7 @@ const ViewImagesModal = ({ isOpen, onClose, vehicle }) => {
                   <img
                     src={imageUrl}
                     alt={`${vehicle.registration}`}
-                    className="max-w-full max-h-96 object-contain"
+                    className="max-w-full max-h-[60vh] object-contain"
                     onError={(e) => {
                       console.error('Image failed to load event:', e.type);
                       console.error('Image element error:', e.target.error);
