@@ -4,6 +4,7 @@ import RateLimitedUI from '../components/RateLimitedUI.jsx';
 import AddVehicleModal from '../components/AddVehicleModal.jsx';
 import VehicleDetailsModal from '../components/VehicleDetailsModal.jsx';
 import VehicleNotesModal from '../components/VehicleNotesModal.jsx';
+import ViewImagesModal from '../components/ViewImagesModal.jsx';
 import apiClient from '../services/apiClient.js';
 import toast from 'react-hot-toast';
 import VehicleCard from '../components/VehicleCard.jsx';
@@ -26,6 +27,8 @@ const VehicleListPage = () => {
     const [ selectedDetailsVehicle, setSelectedDetailsVehicle ] = React.useState(null);
     const [ showNotesModal, setShowNotesModal ] = React.useState(false);
     const [ selectedNotesVehicle, setSelectedNotesVehicle ] = React.useState(null);
+    const [ showImagesModal, setShowImagesModal ] = React.useState(false);
+    const [ selectedImagesVehicle, setSelectedImagesVehicle ] = React.useState(null);
 
     React.useEffect(() => {
         let throttleTimer = null;
@@ -152,6 +155,17 @@ const VehicleListPage = () => {
     const handleCloseNotes = useCallback(() => {
         setShowNotesModal(false);
         setSelectedNotesVehicle(null);
+    }, []);
+
+    // Callbacks for Images Modal
+    const handleShowImages = useCallback((vehicle) => {
+        setSelectedImagesVehicle(vehicle);
+        setShowImagesModal(true);
+    }, []);
+
+    const handleCloseImages = useCallback(() => {
+        setShowImagesModal(false);
+        setSelectedImagesVehicle(null);
     }, []);
 
   return (
@@ -298,6 +312,7 @@ const VehicleListPage = () => {
                         setVehicles={setVehicles}
                         onShowDetails={handleShowDetails}
                         onShowNotes={handleShowNotes}
+                        onShowImages={handleShowImages}
                       />
                     ))}
                   </tbody>
@@ -344,6 +359,14 @@ const VehicleListPage = () => {
           onVehicleUpdate={(updatedVehicle) => {
             setVehicles(vehicles.map(v => v._id === updatedVehicle._id ? updatedVehicle : v))
           }}
+        />
+      )}
+
+      {selectedImagesVehicle && (
+        <ViewImagesModal
+          isOpen={showImagesModal}
+          onClose={handleCloseImages}
+          vehicle={selectedImagesVehicle}
         />
       )}
       

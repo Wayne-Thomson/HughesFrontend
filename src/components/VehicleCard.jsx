@@ -3,6 +3,7 @@ import apiClient from '../services/apiClient.js'
 import toast from 'react-hot-toast';
 import VehicleDetailsModal from './VehicleDetailsModal'
 import VehicleNotesModal from './VehicleNotesModal'
+import ViewImagesModal from './ViewImagesModal'
 
 const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor = 'red', isDeleted = false, setLoading, vehicles, setVehicles }) => {
   const [showConfirmation, setShowConfirmation] = useState(false)
@@ -10,6 +11,7 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
   const [showPermanentDeleteConfirmation, setShowPermanentDeleteConfirmation] = useState(false)
   const [showDetailsModal, setShowDetailsModal] = useState(false)
   const [showNotesModal, setShowNotesModal] = useState(false)
+  const [showImagesModal, setShowImagesModal] = useState(false)
   const {
     createdAt: dateAdded,
     registration,
@@ -193,6 +195,14 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
         >
           View/Update Notes
         </button>
+        {!isDeleted && (
+          <button
+            onClick={() => setShowImagesModal(true)}
+            className="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200"
+          >
+            Images
+          </button>
+        )}
         {isDeleted && (
           <button
             onClick={handlePermanentDeleteClick}
@@ -306,6 +316,12 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
         onVehicleUpdate={(updatedVehicle) => {
           setVehicles(vehicles.map(v => v._id === updatedVehicle._id ? updatedVehicle : v))
         }}
+      />
+
+      <ViewImagesModal
+        isOpen={showImagesModal}
+        onClose={() => setShowImagesModal(false)}
+        vehicle={vehicle}
       />
     </li>
   )

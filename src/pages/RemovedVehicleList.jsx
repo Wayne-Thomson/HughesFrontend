@@ -4,6 +4,7 @@ import VehicleCard from '../components/VehicleCard';
 import VehicleListItem from '../components/VehicleListItem';
 import VehicleDetailsModal from '../components/VehicleDetailsModal';
 import VehicleNotesModal from '../components/VehicleNotesModal';
+import ViewImagesModal from '../components/ViewImagesModal';
 import RateLimitedUI from '../components/RateLimitedUI';
 import apiClient from '../services/apiClient.js'; 
 import toast from 'react-hot-toast';
@@ -23,6 +24,8 @@ const RemovedVehicleList = () => {
     const [ selectedDetailsVehicle, setSelectedDetailsVehicle ] = React.useState(null);
     const [ showNotesModal, setShowNotesModal ] = React.useState(false);
     const [ selectedNotesVehicle, setSelectedNotesVehicle ] = React.useState(null);
+    const [ showImagesModal, setShowImagesModal ] = React.useState(false);
+    const [ selectedImagesVehicle, setSelectedImagesVehicle ] = React.useState(null);
 
     React.useEffect(() => {
         const handleScroll = () => {
@@ -131,6 +134,17 @@ const RemovedVehicleList = () => {
     const handleCloseNotes = () => {
         setShowNotesModal(false);
         setSelectedNotesVehicle(null);
+    };
+
+    // Callbacks for Images Modal
+    const handleShowImages = (vehicle) => {
+        setSelectedImagesVehicle(vehicle);
+        setShowImagesModal(true);
+    };
+
+    const handleCloseImages = () => {
+        setShowImagesModal(false);
+        setSelectedImagesVehicle(null);
     };
 
   return (
@@ -280,6 +294,7 @@ const RemovedVehicleList = () => {
                         setVehicles={setVehicles}
                         onShowDetails={handleShowDetails}
                         onShowNotes={handleShowNotes}
+                        onShowImages={handleShowImages}
                       />
                     ))}
                   </tbody>
@@ -313,6 +328,14 @@ const RemovedVehicleList = () => {
           onVehicleUpdate={(updatedVehicle) => {
             setVehicles(vehicles.map(v => v._id === updatedVehicle._id ? updatedVehicle : v))
           }}
+        />
+      )}
+
+      {selectedImagesVehicle && (
+        <ViewImagesModal
+          isOpen={showImagesModal}
+          onClose={handleCloseImages}
+          vehicle={selectedImagesVehicle}
         />
       )}
       

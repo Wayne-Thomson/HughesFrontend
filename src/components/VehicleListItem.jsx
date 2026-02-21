@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import apiClient from '../services/apiClient.js'
 import toast from 'react-hot-toast';
 
-const VehicleListItem = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor = 'red', isDeleted = false, setLoading, vehicles, setVehicles, onShowDetails, onShowNotes }) => {
+const VehicleListItem = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor = 'red', isDeleted = false, setLoading, vehicles, setVehicles, onShowDetails, onShowNotes, onShowImages }) => {
   const [showConfirmation, setShowConfirmation] = useState(false)
   const [hardDeleteChecked, setHardDeleteChecked] = useState(false)
   const [showPermanentDeleteConfirmation, setShowPermanentDeleteConfirmation] = useState(false)
@@ -168,6 +168,15 @@ const VehicleListItem = ({ vehicle, deleteButtonText = 'Delete', deleteButtonCol
             >
               Notes
             </button>
+            {!isDeleted && (
+              <button
+                onClick={() => onShowImages(vehicle)}
+                className="px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium rounded transition-colors"
+                title="View Images"
+              >
+                Images
+              </button>
+            )}
             {isDeleted && (
               <button
                 onClick={handlePermanentDeleteClick}
