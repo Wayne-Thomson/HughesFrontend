@@ -126,8 +126,8 @@ const ViewImagesModal = ({ isOpen, onClose, vehicle }) => {
       const compressedBlob = await compressImage(file)
       toast.dismiss('compress')
       
-      const compressedSizeInKB = (compressedBlob.size / 1024).toFixed(2)
-      toast.success(`Image compressed to ${compressedSizeInKB} KB`)
+    //   const compressedSizeInKB = (compressedBlob.size / 1024).toFixed(2)
+      toast.success(`Image compressed`)
 
       // Create FormData for multipart upload
       const formData = new FormData()
