@@ -73,8 +73,8 @@ const ViewImagesModal = ({ isOpen, onClose, vehicle }) => {
         img.onload = () => {
           const canvas = document.createElement('canvas')
           const ctx = canvas.getContext('2d')
-          const MAX_WIDTH = 800
-          const MAX_HEIGHT = 800
+          const MAX_WIDTH = 950
+          const MAX_HEIGHT = 950
           let width = img.width
           let height = img.height
 
