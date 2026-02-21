@@ -259,8 +259,8 @@ const ViewImagesModal = ({ isOpen, onClose, vehicle }) => {
           {/* Content */}
           <div className="p-6 flex-1 overflow-y-auto">
             {isLoading ? (
-              <div className="flex justify-center items-center py-12">
-                <div className="animate-spin rounded-full h-16 w-16 border-4 border-gray-300 border-t-indigo-600"></div>
+              <div className="text-center py-12">
+                <p className="text-gray-600">Loading image...</p>
               </div>
             ) : imageUrl ? (
               <div className="space-y-4">
