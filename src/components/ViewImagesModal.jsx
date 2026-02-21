@@ -9,10 +9,11 @@ const ViewImagesModal = ({ isOpen, onClose, vehicle }) => {
   const [hasNoImage, setHasNoImage] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
   const fileInputRef = useRef(null)
   const cameraInputRef = useRef(null)
 
-  const MAX_FILE_SIZE = 3 * 1024 * 1024 // 3MB
+  const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
 
   useEffect(() => {
     if (isOpen && vehicle) {
@@ -21,6 +22,16 @@ const ViewImagesModal = ({ isOpen, onClose, vehicle }) => {
       fetchImage()
     }
   }, [isOpen, vehicle])
+
+  useEffect(() => {
+    // Detect if device is mobile based on user agent
+    const checkIfMobile = () => {
+      const userAgent = navigator.userAgent || navigator.vendor || window.opera
+      const isMobileDevice = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(userAgent.toLowerCase())
+      setIsMobile(isMobileDevice)
+    }
+    checkIfMobile()
+  }, [])
 
   const fetchImage = async () => {
     setIsLoading(true)
@@ -104,7 +115,7 @@ const ViewImagesModal = ({ isOpen, onClose, vehicle }) => {
 
     // Validate file size
     if (file.size > MAX_FILE_SIZE) {
-      toast.error('File size must be less than 3MB')
+      toast.error('Source image must be less than 5MB. Try lowering camera resolution or choosing a smaller image.')
       return
     }
 
@@ -284,13 +295,15 @@ const ViewImagesModal = ({ isOpen, onClose, vehicle }) => {
                   <Plus className="size-8 text-gray-600 hover:text-indigo-600" />
                   <span className="text-gray-700 font-medium">Choose from Gallery</span>
                 </button>
-                <button
-                  onClick={handleCameraClick}
-                  className="flex flex-col items-center gap-2 p-6 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 transition-colors w-full"
-                >
-                  <Camera className="size-8 text-gray-600 hover:text-blue-600" />
-                  <span className="text-gray-700 font-medium">Take Photo</span>
-                </button>
+                {isMobile && (
+                  <button
+                    onClick={handleCameraClick}
+                    className="flex flex-col items-center gap-2 p-6 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 transition-colors w-full"
+                  >
+                    <Camera className="size-8 text-gray-600 hover:text-blue-600" />
+                    <span className="text-gray-700 font-medium">Take Photo</span>
+                  </button>
+                )}
               </div>
             ) : (
               <div className="text-center py-12">
