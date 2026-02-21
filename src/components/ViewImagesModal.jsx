@@ -95,7 +95,7 @@ const ViewImagesModal = ({ isOpen, onClose, vehicle }) => {
           ctx.drawImage(img, 0, 0, width, height)
           canvas.toBlob((blob) => {
             resolve(blob)
-          }, 'image/jpeg', 0.7)
+          }, 'image/jpeg', 0.85)
         }
         img.onerror = (error) => reject(error)
       }
