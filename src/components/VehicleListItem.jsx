@@ -21,7 +21,8 @@ const VehicleListItem = ({ vehicle, deleteButtonText = 'Delete', deleteButtonCol
     vin,
     _id,
     enginePower,
-    primaryColour
+    primaryColour,
+    
   } = vehicle
 
   const year = manufactureDate?.split('-')[0]
@@ -130,8 +131,8 @@ const VehicleListItem = ({ vehicle, deleteButtonText = 'Delete', deleteButtonCol
         {/* Engine Size */}
         <td className="px-6 py-4 whitespace-nowrap">
           <p className="text-sm font-medium text-gray-900">{engineSize || 'N/A'} cc</p>
-          {engineSize && (
-            <p className="text-xs text-gray-600">≈ {Math.round(engineSize / 15)} bhp</p>
+          {vehicle.Performance?.Power?.Bhp && (
+            <p className="text-xs text-gray-600">{vehicle.Performance.Power.Bhp} bhp</p>
           )}
         </td>
 

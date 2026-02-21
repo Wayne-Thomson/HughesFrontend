@@ -163,12 +163,12 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
           <p className="text-base font-medium text-gray-900 mt-1">{fuelType}</p>
         </div>
 
-        {/* Engine Size - CC and Calculated BHP */}
+        {/* Engine Size - CC and BHP */}
         <div>
           <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Engine Size</p>
           <p className="text-base font-medium text-gray-900 mt-1">{engineSize || 'N/A'} cc</p>
-          {engineSize && (
-            <p className="text-sm font-medium text-gray-700 mt-1">≈ {Math.round(engineSize / 15)} bhp</p>
+          {vehicle.Performance?.Power?.Bhp && (
+            <p className="text-sm font-medium text-gray-700 mt-1">{vehicle.Performance.Power.Bhp} bhp</p>
           )}
         </div>
 
