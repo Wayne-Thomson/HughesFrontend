@@ -12,6 +12,7 @@ const VehicleListItem = ({ vehicle, deleteButtonText = 'Delete', deleteButtonCol
     make,
     model,
     generation,
+    engineCode,
     country,
     manufactureDate,
     engineSize,
@@ -117,7 +118,7 @@ const VehicleListItem = ({ vehicle, deleteButtonText = 'Delete', deleteButtonCol
         <td className="px-1 py-4 whitespace-nowrap">
           <p className="text-sm font-medium text-gray-900">{make}</p>
           <p className="text-sm text-gray-600">{model}</p>
-          <p className="text-xs text-gray-500">{generation || 'Unknown'}</p>
+          <p className="text-xs text-gray-500">{generation || 'Unknown'} ({engineCode || 'UNKNOWN'})</p>
         </td>
 
         {/* Year & Country */}

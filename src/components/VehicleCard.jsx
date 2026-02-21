@@ -16,6 +16,7 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
     make,
     model,
     generation,
+    engineCode,
     country,
     manufactureDate,
     engineSize,
@@ -132,7 +133,7 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
             {make} {model}
           </p>
           <p className="text-xs text-gray-500 mt-1">
-            {generation || 'Unknown'}
+            {generation || 'Unknown'} ({engineCode || 'UNKNOWN'})
           </p>
         </div>
         <div className="flex flex-col gap-2">
