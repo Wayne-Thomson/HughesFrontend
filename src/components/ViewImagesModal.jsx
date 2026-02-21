@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { X, Plus } from 'lucide-react'
+import { X, Plus, Camera } from 'lucide-react'
 import apiClient from '../services/apiClient.js'
 import toast from 'react-hot-toast'
 
@@ -10,6 +10,7 @@ const ViewImagesModal = ({ isOpen, onClose, vehicle }) => {
   const [isUploading, setIsUploading] = useState(false)
   const [isConfirmingDelete, setIsConfirmingDelete] = useState(false)
   const fileInputRef = useRef(null)
+  const cameraInputRef = useRef(null)
 
   const MAX_FILE_SIZE = 3 * 1024 * 1024 // 3MB
 
@@ -158,6 +159,10 @@ const ViewImagesModal = ({ isOpen, onClose, vehicle }) => {
     fileInputRef.current?.click()
   }
 
+  const handleCameraClick = () => {
+    cameraInputRef.current?.click()
+  }
+
   const handleDeleteImage = () => {
     setIsConfirmingDelete(true)
   }
@@ -198,6 +203,17 @@ const ViewImagesModal = ({ isOpen, onClose, vehicle }) => {
         ref={fileInputRef}
         type="file"
         accept=".jpeg,.jpg"
+        onChange={handleFileUpload}
+        disabled={isUploading}
+        className="hidden"
+      />
+
+      {/* Hidden camera input */}
+      <input
+        ref={cameraInputRef}
+        type="file"
+        accept="image/jpeg,image/jpg"
+        capture="environment"
         onChange={handleFileUpload}
         disabled={isUploading}
         className="hidden"
@@ -260,13 +276,20 @@ const ViewImagesModal = ({ isOpen, onClose, vehicle }) => {
                 </button>
               </div>
             ) : hasNoImage ? (
-              <div className="flex flex-col items-center justify-center py-12">
+              <div className="flex flex-col items-center justify-center py-12 gap-4">
                 <button
                   onClick={handleAddOrReplaceClick}
-                  className="flex flex-col items-center gap-2 p-6 border-2 border-dashed border-gray-300 rounded-lg hover:border-indigo-600 hover:bg-indigo-50 transition-colors"
+                  className="flex flex-col items-center gap-2 p-6 border-2 border-dashed border-gray-300 rounded-lg hover:border-indigo-600 hover:bg-indigo-50 transition-colors w-full"
                 >
                   <Plus className="size-8 text-gray-600 hover:text-indigo-600" />
-                  <span className="text-gray-700 font-medium">Add Image</span>
+                  <span className="text-gray-700 font-medium">Choose from Gallery</span>
+                </button>
+                <button
+                  onClick={handleCameraClick}
+                  className="flex flex-col items-center gap-2 p-6 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-600 hover:bg-blue-50 transition-colors w-full"
+                >
+                  <Camera className="size-8 text-gray-600 hover:text-blue-600" />
+                  <span className="text-gray-700 font-medium">Take Photo</span>
                 </button>
               </div>
             ) : (
