@@ -15,6 +15,8 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
     registration,
     make,
     model,
+    generation,
+    country,
     manufactureDate,
     engineSize,
     fuelType,
@@ -129,6 +131,9 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
           <p className="text-sm text-gray-600 mt-1">
             {make} {model}
           </p>
+          <p className="text-xs text-gray-500 mt-1">
+            {generation || 'Unknown'}
+          </p>
         </div>
         <div className="flex flex-col gap-2">
           <span className="inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded">
@@ -144,10 +149,11 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
 
       {/* Vehicle Details Grid */}
       <div className="grid grid-cols-2 gap-4 mb-4 pb-4 border-t border-gray-200 pt-4">
-        {/* Year */}
+        {/* Year & Country */}
         <div>
-          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Year</p>
+          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Year & Country</p>
           <p className="text-base font-medium text-gray-900 mt-1">{year}</p>
+          <p className="text-sm text-gray-600">{country || 'Unknown'}</p>
         </div>
 
         {/* Fuel Type */}

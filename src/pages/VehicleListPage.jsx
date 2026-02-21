@@ -159,7 +159,7 @@ const VehicleListPage = () => {
       <StandardNavBar onOpenAddVehicleModal={() => setShowAddVehicleModal(true)} />
       {/* Filter Bar */}
       <div className={`md:sticky md:top-16 md:z-20 py-2 transition-all ${isScrolled ? 'md:bg-black md:border-b md:border-gray-200 md:shadow-sm' : ''}`}>
-        <div className="max-w-7xl mx-auto px-4">
+        <div className="max-w-[84rem] mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 mb-4">
             {/* Search */}
             <div>
@@ -262,7 +262,7 @@ const VehicleListPage = () => {
         </>
       )}
 
-      <div className="max-w-7xl mx-auto px-4 py-0 mt-0">
+      <div className="max-w-[84rem] mx-auto px-4 py-0 mt-0">
         {(filteredVehicles.length > 0) && (!rateLimited) && (
           <>
             {layoutView === 'grid' ? (
@@ -279,8 +279,8 @@ const VehicleListPage = () => {
                   <thead>
                     <tr className="bg-gray-100 border-b-2 border-gray-300">
                       <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Registration</th>
-                      <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Make & Model</th>
-                      <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Year</th>
+                      <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Make, Model & Gen</th>
+                      <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Year & Country</th>
                       <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Engine</th>
                       <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Fuel Type</th>
                       <th className="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Colour</th>
