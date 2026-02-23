@@ -9,6 +9,18 @@ const VehicleDetailsModal = ({ isOpen, onClose, vehicle }) => {
 
   if (!isOpen || !vehicle) return null
 
+  const getSeriesDisplay = () => {
+    const series = vehicle?.SmmtDetails?.Series
+    const seriesDescription = vehicle?.General?.SeriesDescription
+    if (series && seriesDescription && series === seriesDescription) {
+      return series
+    }
+    if (seriesDescription && series) {
+      return `${seriesDescription} - ${series}`
+    }
+    return seriesDescription || series || 'N/A'
+  }
+
   const toggleSection = (sectionName) => {
     setExpandedSections(prev => ({
       ...prev,
@@ -94,8 +106,8 @@ const VehicleDetailsModal = ({ isOpen, onClose, vehicle }) => {
                   <p className="text-sm text-gray-900 mt-1">{vehicle.model || 'N/A'}</p>
                 </div>
                 <div>
-                  <p className="text-xs font-semibold text-gray-500 uppercase">Generation</p>
-                  <p className="text-sm text-gray-900 mt-1">{vehicle.generation || 'N/A'} ({vehicle.engineCode || 'UNKNOWN'})</p>
+                  <p className="text-xs font-semibold text-gray-500 uppercase">Series & Engine</p>
+                  <p className="text-sm text-gray-900 mt-1">{getSeriesDisplay()} ({vehicle.engineCode || 'UNKNOWN'})</p>
                 </div>
                 <div>
                   <p className="text-xs font-semibold text-gray-500 uppercase">Manufacture Date</p>

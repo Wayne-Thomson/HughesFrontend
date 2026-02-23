@@ -30,6 +30,15 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
     primaryColour
   } = vehicle
 
+  const getSeriesDisplay = () => {
+    const series = vehicle?.SmmtDetails?.Series || generation
+    const seriesDescription = vehicle?.General?.SeriesDescription
+    if (series && seriesDescription && series === seriesDescription) {
+      return series
+    }
+    return seriesDescription || series || 'Unknown'
+  }
+
   const year = manufactureDate?.split('-')[0]
 
   const formatDate = (date) => {
@@ -132,10 +141,10 @@ const VehicleCard = ({ vehicle, deleteButtonText = 'Delete', deleteButtonColor =
             <p className="text-base text-gray-700 font-mono tabular-nums uppercase" style={{ minWidth: '18ch', display: 'block' }}>{vin}</p>
           </div>
           <p className="text-sm text-gray-600 mt-1">
-            {make} {model}
+            {make} - {model}
           </p>
           <p className="text-xs text-gray-500 mt-1">
-            {generation || 'Unknown'} ({engineCode || 'UNKNOWN'})
+            {getSeriesDisplay()} ({engineCode || 'UNKNOWN'})
           </p>
         </div>
         <div className="flex flex-col gap-2">

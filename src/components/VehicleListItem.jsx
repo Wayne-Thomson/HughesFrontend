@@ -25,6 +25,15 @@ const VehicleListItem = ({ vehicle, deleteButtonText = 'Delete', deleteButtonCol
     
   } = vehicle
 
+  const getSeriesDisplay = () => {
+    const series = vehicle?.SmmtDetails?.Series || generation
+    const seriesDescription = vehicle?.General?.SeriesDescription
+    if (series && seriesDescription && series === seriesDescription) {
+      return series
+    }
+    return seriesDescription || series || 'Unknown'
+  }
+
   const year = manufactureDate?.split('-')[0]
 
   const formatDate = (date) => {
@@ -117,9 +126,8 @@ const VehicleListItem = ({ vehicle, deleteButtonText = 'Delete', deleteButtonCol
 
         {/* Make & Model */}
         <td className="px-1 py-4 whitespace-nowrap">
-          <p className="text-sm font-medium text-gray-900">{make}</p>
-          <p className="text-sm text-gray-600">{model}</p>
-          <p className="text-xs text-gray-500">{generation || 'Unknown'} ({engineCode || 'UNKNOWN'})</p>
+          <p className="text-sm font-medium text-gray-900">{make} - {model}</p>
+          <p className="text-xs text-gray-500">{getSeriesDisplay()} ({engineCode || 'UNKNOWN'})</p>
         </td>
 
         {/* Year & Country */}
