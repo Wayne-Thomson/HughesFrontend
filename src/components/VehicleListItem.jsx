@@ -126,7 +126,8 @@ const VehicleListItem = ({ vehicle, deleteButtonText = 'Delete', deleteButtonCol
 
         {/* Make & Model */}
         <td className="px-1 py-4 whitespace-nowrap">
-          <p className="text-sm font-medium text-gray-900">{make} - {model}</p>
+          <p className="text-sm font-medium text-gray-900">{make}</p>
+          <p className="text-sm text-gray-600">{model}</p>
           <p className="text-xs text-gray-500">{getSeriesDisplay()} ({engineCode || 'UNKNOWN'})</p>
         </td>
 
@@ -160,8 +161,8 @@ const VehicleListItem = ({ vehicle, deleteButtonText = 'Delete', deleteButtonCol
         </td>
 
         {/* Action Buttons */}
-        <td className="px-6 py-4 whitespace-nowrap">
-          <div className="flex gap-2">
+        <td className="px-6 py-4">
+          <div className="grid grid-cols-2 gap-2">
             <button 
               onClick={() => onShowDetails(vehicle)}
               className="px-3 py-1 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded transition-colors"
