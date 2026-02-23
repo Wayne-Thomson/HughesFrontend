@@ -110,7 +110,7 @@ const VehicleListItem = ({ vehicle, deleteButtonText = 'Delete', deleteButtonCol
         {/* Registration & VIN */}
         <td className="px-6 py-4 whitespace-nowrap">
           <div className="bg-yellow-300 border-2 border-yellow-400 px-2 py-1 rounded inline-block w-fit">
-            <p className="text-sm font-bold text-gray-700 font-mono tabular-nums">{registration}</p>
+            <p className="text-sm font-bold text-gray-700 font-mono tabular-nums">{registration.replaceAll(' ', '')}</p>
             <p className="text-sm text-gray-700 font-mono tabular-nums uppercase" style={{ minWidth: '18ch', display: 'block' }}>{vin}</p>
           </div>
         </td>
@@ -207,7 +207,7 @@ const VehicleListItem = ({ vehicle, deleteButtonText = 'Delete', deleteButtonCol
             <p className="text-gray-600 mb-4">
               Are you sure you want to {deleteButtonText.toLowerCase()} this vehicle?
             </p>
-            <p className="text-sm font-semibold text-gray-700 mb-2">{registration}</p>
+            <p className="text-sm font-semibold text-gray-700 mb-2">{registration.replaceAll(' ', '')}</p>
             <p className="text-sm text-gray-600 mb-6">
               {make} {model}
             </p>
@@ -258,7 +258,7 @@ const VehicleListItem = ({ vehicle, deleteButtonText = 'Delete', deleteButtonCol
             <p className="text-gray-600 mb-4">
               Are you sure you want to permanently delete this vehicle? This action cannot be undone.
             </p>
-            <p className="text-sm font-semibold text-gray-700 mb-2">{registration}</p>
+            <p className="text-sm font-semibold text-gray-700 mb-2">{registration.replaceAll(' ', '')}</p>
             <p className="text-sm text-gray-600 mb-6">
               {make} {model}
             </p>
