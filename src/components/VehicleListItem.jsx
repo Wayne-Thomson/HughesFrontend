@@ -161,8 +161,8 @@ const VehicleListItem = ({ vehicle, deleteButtonText = 'Delete', deleteButtonCol
         </td>
 
         {/* Action Buttons */}
-        <td className="px-6 py-4">
-          <div className="grid grid-cols-2 gap-2">
+        <td className="px-6 py-4 whitespace-nowrap">
+          <div className="flex md:grid gap-2 md:grid-cols-2">
             <button 
               onClick={() => onShowDetails(vehicle)}
               className="px-3 py-1 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded transition-colors"
