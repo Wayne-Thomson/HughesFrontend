@@ -1,10 +1,12 @@
 import { PlusIcon, Menu, X, LogOut } from 'lucide-react'
 import { Link, useLocation, useNavigate } from 'react-router'
 import { useState, useEffect, useRef } from 'react'
-import toast from 'react-hot-toast';
+import toast from 'react-hot-toast'
+import apiClient from '../services/apiClient.js'
 
 const StandardNavBar = ({ onOpenAddVehicleModal, onOpenAddUserModal }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [companyStats, setCompanyStats] = useState(null)
   const location = useLocation()
   const navigate = useNavigate()
   const hasShownToastRef = useRef(false)
@@ -84,6 +86,21 @@ const StandardNavBar = ({ onOpenAddVehicleModal, onOpenAddUserModal }) => {
     }
   }, [])
 
+  useEffect(() => {
+    const fetchCompanyStats = async () => {
+      try {
+        const response = await apiClient.get('/api/company/stats')
+        if (response.status === 200) {
+          setCompanyStats(response.data.data)
+        }
+      } catch (error) {
+        console.error('Error fetching company stats:', error)
+      }
+    }
+
+    fetchCompanyStats()
+  }, [])
+
   return (
     <header className='sticky top-0 z-30 bg-gray-200 border-b border-gray-300 shadow-md'>
       <div className='mx-auto max-w-7xl px-4 py-4'>
@@ -94,6 +111,14 @@ const StandardNavBar = ({ onOpenAddVehicleModal, onOpenAddUserModal }) => {
               <h1 className='text-2xl md:text-3xl font-bold text-gray-900 font-sans tracking-tight cursor-pointer'>
                 Hughes <span className='text-gray-600'>Available Vehicles</span>
               </h1>
+              <div className='flex flex-col md:flex-row gap-2 md:gap-4 mt-2'>
+                <span className='text-xs md:text-sm font-semibold text-gray-700'>
+                  {companyStats ? `${companyStats.vehiclesAddedThisMonth}/${companyStats.monthlyVehicleCapLimit} Monthly Vehicles` : 'Loading...'}
+                </span>
+                <span className='text-xs md:text-sm font-semibold text-gray-700'>
+                  {companyStats ? `${Math.ceil(companyStats.totalDatabaseSizeMB)}/512MB Data Size` : 'Loading...'}
+                </span>
+              </div>
             </div>
             <span className='text-xs md:text-sm font-semibold text-indigo-600 bg-indigo-100 px-2 py-1 rounded whitespace-nowrap'>
               {getDisplayName()}
