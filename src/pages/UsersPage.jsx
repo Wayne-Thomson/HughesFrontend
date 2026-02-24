@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import { useNavigate } from 'react-router'
-import StandardNavBar from '../components/StandardNavBar'
+import { useNavigate, useOutletContext } from 'react-router'
 import AddUserModal from '../components/AddUserModal'
 import UserCard from '../components/UserCard'
 import apiClient from '../services/apiClient.js'
 import toast from 'react-hot-toast'
 
 const UsersPage = () => {
+  const { onUserAdded } = useOutletContext();
   const navigate = useNavigate()
   const [showAddUserModal, setShowAddUserModal] = useState(false);
   const [users, setUsers] = useState([]);
@@ -67,9 +67,14 @@ const UsersPage = () => {
       fetchUsers();
   }, [fetchUsers]);
 
+  React.useEffect(() => {
+      const handleOpenModal = () => setShowAddUserModal(true);
+      window.addEventListener('openAddUserModal', handleOpenModal);
+      return () => window.removeEventListener('openAddUserModal', handleOpenModal);
+  }, []);
+
   return (
     <div className='min-h-screen'>
-      <StandardNavBar onOpenAddUserModal={() => setShowAddUserModal(true)} />
       
       {/* Semi-transparent overlay when loading */}
       {loading && (
@@ -104,7 +109,10 @@ const UsersPage = () => {
       <AddUserModal 
         isOpen={showAddUserModal} 
         onClose={() => setShowAddUserModal(false)}
-        onUserAdded={handleUserAdded}
+        onUserAdded={() => {
+          onUserAdded();
+          handleUserAdded();
+        }}
       />
     </div>
   )

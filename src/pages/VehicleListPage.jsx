@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react'
-import StandardNavBar from '../components/StandardNavBar.jsx';
+import { useOutletContext } from 'react-router';
 import RateLimitedUI from '../components/RateLimitedUI.jsx';
 import AddVehicleModal from '../components/AddVehicleModal.jsx';
 import VehicleDetailsModal from '../components/VehicleDetailsModal.jsx';
@@ -12,6 +12,7 @@ import VehicleListItem from '../components/VehicleListItem.jsx';
 import { ArrowUp, ArrowDown, Grid, List } from 'lucide-react';
 
 const VehicleListPage = () => {
+    const { onVehicleAdded } = useOutletContext();
     const [ loading, setLoading ] = React.useState(true);
     const [ rateLimited, setRateLimited ] = React.useState(false);
     const [ vehicles, setVehicles ] = React.useState([]);
@@ -79,6 +80,12 @@ const VehicleListPage = () => {
     React.useEffect(() => {
         fetchVehicles();
     }, [fetchVehicles]);
+
+    React.useEffect(() => {
+        const handleOpenModal = () => setShowAddVehicleModal(true);
+        window.addEventListener('openAddVehicleModal', handleOpenModal);
+        return () => window.removeEventListener('openAddVehicleModal', handleOpenModal);
+    }, []);
 
     // Reset items to show when filters change
     React.useEffect(() => {
@@ -170,7 +177,6 @@ const VehicleListPage = () => {
 
   return (
     <div className='min-h-screen'>
-      <StandardNavBar onOpenAddVehicleModal={() => setShowAddVehicleModal(true)} />
       {/* Filter Bar */}
       <div className={`md:sticky md:top-16 md:z-20 py-2 transition-all ${isScrolled ? 'md:bg-black md:border-b md:border-gray-200 md:shadow-sm' : ''}`}>
         <div className="max-w-[84rem] mx-auto px-4">
@@ -340,7 +346,10 @@ const VehicleListPage = () => {
       <AddVehicleModal 
         isOpen={showAddVehicleModal} 
         onClose={() => setShowAddVehicleModal(false)}
-        onVehicleAdded={fetchVehicles}
+        onVehicleAdded={() => {
+          onVehicleAdded();
+          fetchVehicles();
+        }}
       />
 
       {selectedDetailsVehicle && (

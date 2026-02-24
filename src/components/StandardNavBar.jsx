@@ -4,12 +4,11 @@ import { useState, useEffect, useRef } from 'react'
 import toast from 'react-hot-toast'
 import apiClient from '../services/apiClient.js'
 
-const StandardNavBar = ({ onOpenAddVehicleModal, onOpenAddUserModal, refreshTrigger }) => {
+const StandardNavBar = ({ refreshTrigger }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [companyStats, setCompanyStats] = useState(null)
   const location = useLocation()
   const navigate = useNavigate()
-  const hasShownToastRef = useRef(false)
   const statsInitializedRef = useRef(false)
 
   const isOnVehicles = location.pathname === '/vehicles'
@@ -56,36 +55,6 @@ const StandardNavBar = ({ onOpenAddVehicleModal, onOpenAddUserModal, refreshTrig
     navigate('/')
     closeMenu()
   }
-
-  useEffect(() => {
-    if (hasShownToastRef.current) return
-
-    const userData = localStorage.getItem('userData')
-    
-    if (!userData) {
-      localStorage.clear()
-      toast.error('You must be logged in to access this page.');
-      hasShownToastRef.current = true
-      navigate('/')
-      return
-    }
-
-    try {
-      const parsedData = JSON.parse(userData)
-      if (parsedData.message !== 'Login successful') {
-        localStorage.clear()
-        toast.error('You must be logged in to access this page.');
-        hasShownToastRef.current = true
-        navigate('/')
-      }
-    } catch (error) {
-      console.error('Error parsing userData:', error)
-      localStorage.clear()
-      toast.error('You must be logged in to access this page.');
-      hasShownToastRef.current = true
-      navigate('/')
-    }
-  }, [])
 
   useEffect(() => {
     // Prevent double initialization (React.StrictMode in development)
@@ -187,14 +156,14 @@ const StandardNavBar = ({ onOpenAddVehicleModal, onOpenAddUserModal, refreshTrig
             {/* Action Buttons */}
             <div className='flex items-center gap-4 ml-auto'>
               {isOnVehicles && (
-                <button onClick={onOpenAddVehicleModal} className='flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition-colors whitespace-nowrap'>
+                <button onClick={() => window.dispatchEvent(new CustomEvent('openAddVehicleModal'))} className='flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition-colors whitespace-nowrap'>
                   <PlusIcon className='size-5 flex-shrink-0'/>
                   <span>Add Vehicle</span>
                 </button>
               )}
 
               {isOnUsers && isAdmin() && (
-                <button onClick={onOpenAddUserModal} className='flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition-colors whitespace-nowrap'>
+                <button onClick={() => window.dispatchEvent(new CustomEvent('openAddUserModal'))} className='flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition-colors whitespace-nowrap'>
                   <PlusIcon className='size-5 flex-shrink-0'/>
                   <span>Add User</span>
                 </button>
@@ -293,7 +262,7 @@ const StandardNavBar = ({ onOpenAddVehicleModal, onOpenAddUserModal, refreshTrig
                 {isOnVehicles && (
                   <button 
                     onClick={() => {
-                      onOpenAddVehicleModal()
+                      window.dispatchEvent(new CustomEvent('openAddVehicleModal'))
                       closeMenu()
                     }}
                     className='flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-3 rounded-lg transition-colors mt-4'
@@ -307,7 +276,7 @@ const StandardNavBar = ({ onOpenAddVehicleModal, onOpenAddUserModal, refreshTrig
                 {isOnUsers && isAdmin() && (
                   <button 
                     onClick={() => {
-                      onOpenAddUserModal()
+                      window.dispatchEvent(new CustomEvent('openAddUserModal'))
                       closeMenu()
                     }}
                     className='flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-3 rounded-lg transition-colors mt-4'

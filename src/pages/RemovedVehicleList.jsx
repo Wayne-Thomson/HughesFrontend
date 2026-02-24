@@ -1,5 +1,4 @@
 import React from 'react';
-import StandardNavBar from '../components/StandardNavBar';
 import VehicleCard from '../components/VehicleCard';
 import VehicleListItem from '../components/VehicleListItem';
 import VehicleDetailsModal from '../components/VehicleDetailsModal';
@@ -149,7 +148,6 @@ const RemovedVehicleList = () => {
 
   return (
     <div className='min-h-screen'>
-      <StandardNavBar />        
       {/* Filter Bar */}
       <div className={`md:sticky md:top-16 md:z-20 py-2 transition-all ${isScrolled ? 'md:bg-black md:border-b md:border-gray-200 md:shadow-sm' : ''}`}>
         <div className="max-w-[84rem] mx-auto px-4">
