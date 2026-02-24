@@ -64,7 +64,7 @@ const AddVehicleModal = ({ isOpen, onClose, onVehicleAdded }) => {
 
       if (response.status === 200) {
         toast.success('Vehicle added successfully!')
-        onVehicleAdded(response.data.vehicle)
+        onVehicleAdded()
         resetModal()
       }
     } catch (err) {
