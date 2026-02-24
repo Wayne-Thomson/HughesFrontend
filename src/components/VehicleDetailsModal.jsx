@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { X, ChevronDown, ChevronUp } from 'lucide-react'
 import apiClient from '../services/apiClient.js'
 import toast from 'react-hot-toast'
@@ -7,6 +7,20 @@ const VehicleDetailsModal = ({ isOpen, onClose, vehicle }) => {
   const [expandedSections, setExpandedSections] = useState({})
   const [expandedMOTs, setExpandedMOTs] = useState({})
   const [isLoading, setIsLoading] = useState(false)
+
+  // Prevent body scroll when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'auto'
+    }
+
+    // Cleanup on unmount
+    return () => {
+      document.body.style.overflow = 'auto'
+    }
+  }, [isOpen])
 
   if (!isOpen || !vehicle) return null
 
