@@ -3,7 +3,7 @@ import { X } from 'lucide-react'
 import apiClient from '../services/apiClient.js'
 import toast from 'react-hot-toast'
 
-const AddUserModal = ({ isOpen, onClose, onUserAdded }) => {
+const AddUserModal = ({ isOpen, onClose, onUserAdded, onRefreshUsers }) => {
   const [formData, setFormData] = useState({
     displayName: '',
     username: '',
@@ -48,6 +48,10 @@ const AddUserModal = ({ isOpen, onClose, onUserAdded }) => {
         toast.success('User added successfully!')
         // Pass the new user data to parent component
         onUserAdded(response.data.user)
+        // Refresh the users list
+        if (onRefreshUsers) {
+          onRefreshUsers()
+        }
         resetModal()
       }
     } catch (error) {
@@ -208,10 +212,11 @@ const AddUserModal = ({ isOpen, onClose, onUserAdded }) => {
           {/* Footer */}
           <div className="flex gap-3 p-6 border-t border-gray-200">
             <button
+              onClick={handleCancel}
               disabled={isLoading}
               className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition font-medium"
             >
-              {showConfirmation ? 'Cancel' : 'Close'}
+              {showConfirmation ? 'Back' : 'Close'}
             </button>
             <button
               onClick={

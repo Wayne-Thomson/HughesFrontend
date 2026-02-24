@@ -113,6 +113,7 @@ const UsersPage = () => {
           onUserAdded();
           handleUserAdded();
         }}
+        onRefreshUsers={fetchUsers}
       />
     </div>
   )
