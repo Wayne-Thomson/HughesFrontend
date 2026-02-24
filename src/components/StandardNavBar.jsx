@@ -111,12 +111,12 @@ const StandardNavBar = ({ onOpenAddVehicleModal, onOpenAddUserModal }) => {
               <h1 className='text-2xl md:text-3xl font-bold text-gray-900 font-sans tracking-tight cursor-pointer'>
                 Hughes <span className='text-gray-600'>Available Vehicles</span>
               </h1>
-              <div className='flex flex-col md:flex-row gap-2 md:gap-4 mt-2'>
-                <span className='text-xs md:text-sm font-semibold text-gray-700'>
+              <div className='hidden md:flex flex-col md:flex-row gap-2 md:gap-4 mt-2'>
+                <span className={`text-xs md:text-sm font-semibold ${companyStats && companyStats.vehiclesAddedThisMonth >= companyStats.monthlyVehicleCapLimit ? 'text-red-600' : 'text-gray-700'}`}>
                   {companyStats ? `${companyStats.vehiclesAddedThisMonth}/${companyStats.monthlyVehicleCapLimit} Monthly Vehicles` : 'Loading...'}
                 </span>
-                <span className='text-xs md:text-sm font-semibold text-gray-700'>
-                  {companyStats ? `${Math.ceil(companyStats.totalDatabaseSizeMB)}/512MB Data Size` : 'Loading...'}
+                <span className={`text-xs md:text-sm font-semibold ${companyStats && Math.ceil(companyStats.totalDatabaseSizeMB) >= 350 ? 'text-red-600' : 'text-gray-700'}`}>
+                  {companyStats ? `${Math.ceil(companyStats.totalDatabaseSizeMB)}/350MB Data Size` : 'Loading...'}
                 </span>
               </div>
             </div>
@@ -210,6 +210,17 @@ const StandardNavBar = ({ onOpenAddVehicleModal, onOpenAddUserModal }) => {
                 >
                   <X className='size-6 text-gray-900'/>
                 </button>
+              </div>
+
+              {/* Stats at top of mobile menu */}
+              <div className='border-b border-gray-300 p-4 space-y-2'>
+                <h3 className='text-sm font-bold text-gray-900 mb-2'>Limits</h3>
+                <span className={`block text-xs font-semibold ${companyStats && companyStats.vehiclesAddedThisMonth >= companyStats.monthlyVehicleCapLimit ? 'text-red-600' : 'text-gray-700'}`}>
+                  {companyStats ? `${companyStats.vehiclesAddedThisMonth}/${companyStats.monthlyVehicleCapLimit} Monthly Vehicles` : 'Loading...'}
+                </span>
+                <span className={`block text-xs font-semibold ${companyStats && Math.ceil(companyStats.totalDatabaseSizeMB) >= 350 ? 'text-red-600' : 'text-gray-700'}`}>
+                  {companyStats ? `${Math.ceil(companyStats.totalDatabaseSizeMB)}/350MB Data Size` : 'Loading...'}
+                </span>
               </div>
 
               {/* Navigation Items */}
