@@ -402,25 +402,80 @@ const VehicleDetailsModal = ({ isOpen, onClose, vehicle }) => {
                   )}
                 </button>
                 {expandedSections.motTests && (
-                  <div className="p-4 bg-white space-y-3">
+                  <div className="p-4 bg-white space-y-4">
                     {vehicle.motTests.map((mot, index) => (
-                      <div key={index} className="border border-gray-200 rounded-lg p-3 bg-gray-50">
-                        <div className="grid grid-cols-3 gap-3 text-sm">
+                      <div key={index} className="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                        {/* MOT Header */}
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4 pb-4 border-b border-gray-200">
                           <div>
                             <p className="text-xs font-semibold text-gray-500 uppercase">Test Date</p>
-                            <p className="text-gray-900 mt-1">{formatDate(mot.testDate)}</p>
+                            <p className="text-sm text-gray-900 mt-1">{formatDate(mot.completedDate)}</p>
                           </div>
                           <div>
                             <p className="text-xs font-semibold text-gray-500 uppercase">Result</p>
-                            <p className={`text-sm font-semibold mt-1 ${mot.result === 'PASSED' ? 'text-green-600' : 'text-red-600'}`}>
-                              {mot.result}
+                            <p className={`text-sm font-bold mt-1 ${mot.testResult === 'PASSED' ? 'text-green-600' : 'text-red-600'}`}>
+                              {mot.testResult}
                             </p>
                           </div>
                           <div>
-                            <p className="text-xs font-semibold text-gray-500 uppercase">Mileage</p>
-                            <p className="text-gray-900 mt-1">{mot.mileage ? mot.mileage.toLocaleString() + ' km' : 'N/A'}</p>
+                            <p className="text-xs font-semibold text-gray-500 uppercase">Expiry Date</p>
+                            <p className="text-sm text-gray-900 mt-1">{formatDate(mot.expiryDate)}</p>
+                          </div>
+                          <div>
+                            <p className="text-xs font-semibold text-gray-500 uppercase">Test Number</p>
+                            <p className="text-sm text-gray-900 mt-1 font-mono">{mot.motTestNumber || 'N/A'}</p>
                           </div>
                         </div>
+
+                        {/* MOT Details */}
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-3 mb-4 pb-4 border-b border-gray-200">
+                          <div>
+                            <p className="text-xs font-semibold text-gray-500 uppercase">Odometer</p>
+                            <p className="text-sm text-gray-900 mt-1">{mot.odometerValue ? mot.odometerValue.toLocaleString() + ' ' + (mot.odometerUnit || 'KM') : 'N/A'}</p>
+                          </div>
+                          <div>
+                            <p className="text-xs font-semibold text-gray-500 uppercase">Odometer Result</p>
+                            <p className="text-sm text-gray-900 mt-1">{mot.odometerResultType || 'N/A'}</p>
+                          </div>
+                          <div>
+                            <p className="text-xs font-semibold text-gray-500 uppercase">Data Source</p>
+                            <p className="text-sm text-gray-900 mt-1">{mot.dataSource || 'N/A'}</p>
+                          </div>
+                          <div className="md:col-span-2">
+                            <p className="text-xs font-semibold text-gray-500 uppercase">Location</p>
+                            <p className="text-sm text-gray-900 mt-1">{mot.location || 'N/A'}</p>
+                          </div>
+                        </div>
+
+                        {/* Defects Section */}
+                        {mot.defects && mot.defects.length > 0 && (
+                          <div>
+                            <p className="text-xs font-semibold text-gray-500 uppercase mb-2">Defects ({mot.defects.length})</p>
+                            <div className="space-y-2">
+                              {mot.defects.map((defect, defectIndex) => (
+                                <div key={defectIndex} className="bg-white p-3 rounded border-l-4 border-gray-300">
+                                  <div className="flex items-start justify-between mb-1">
+                                    <p className={`text-xs font-semibold uppercase ${
+                                      defect.type === 'DANGEROUS' ? 'text-red-600' :
+                                      defect.type === 'PRS' ? 'text-orange-600' :
+                                      'text-blue-600'
+                                    }`}>
+                                      {defect.type}
+                                    </p>
+                                    {defect.dangerous && (
+                                      <span className="text-xs font-bold text-red-600 bg-red-100 px-2 py-0.5 rounded">⚠️ DANGEROUS</span>
+                                    )}
+                                  </div>
+                                  <p className="text-sm text-gray-700">{defect.text}</p>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+
+                        {(!mot.defects || mot.defects.length === 0) && (
+                          <p className="text-sm text-green-600 font-semibold">✓ No defects found</p>
+                        )}
                       </div>
                     ))}
                   </div>
