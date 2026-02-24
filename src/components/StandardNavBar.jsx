@@ -4,12 +4,13 @@ import { useState, useEffect, useRef } from 'react'
 import toast from 'react-hot-toast'
 import apiClient from '../services/apiClient.js'
 
-const StandardNavBar = ({ onOpenAddVehicleModal, onOpenAddUserModal }) => {
+const StandardNavBar = ({ onOpenAddVehicleModal, onOpenAddUserModal, refreshTrigger }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [companyStats, setCompanyStats] = useState(null)
   const location = useLocation()
   const navigate = useNavigate()
   const hasShownToastRef = useRef(false)
+  const statsInitializedRef = useRef(false)
 
   const isOnVehicles = location.pathname === '/vehicles'
   const isOnUsers = location.pathname === '/users'
@@ -87,6 +88,35 @@ const StandardNavBar = ({ onOpenAddVehicleModal, onOpenAddUserModal }) => {
   }, [])
 
   useEffect(() => {
+    // Prevent double initialization (React.StrictMode in development)
+    if (statsInitializedRef.current) return
+    statsInitializedRef.current = true
+
+    const fetchCompanyStats = async () => {
+      try {
+        const response = await apiClient.get('/api/company/stats')
+        if (response.status === 200) {
+          setCompanyStats(response.data.data)
+        }
+      } catch (error) {
+        console.error('Error fetching company stats:', error)
+      }
+    }
+
+    // Fetch immediately on mount
+    fetchCompanyStats()
+
+    // Set up 10-minute interval for regular refresh
+    const intervalId = setInterval(fetchCompanyStats, 10 * 60 * 1000) // 10 minutes in milliseconds
+
+    // Cleanup interval on unmount
+    return () => clearInterval(intervalId)
+  }, [])
+
+  // Separate effect for manual refresh trigger
+  useEffect(() => {
+    if (refreshTrigger === undefined || refreshTrigger === null) return
+
     const fetchCompanyStats = async () => {
       try {
         const response = await apiClient.get('/api/company/stats')
@@ -99,7 +129,7 @@ const StandardNavBar = ({ onOpenAddVehicleModal, onOpenAddUserModal }) => {
     }
 
     fetchCompanyStats()
-  }, [])
+  }, [refreshTrigger])
 
   return (
     <header className='sticky top-0 z-30 bg-gray-200 border-b border-gray-300 shadow-md'>
