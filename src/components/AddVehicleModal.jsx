@@ -6,26 +6,55 @@ import toast from 'react-hot-toast'
 const AddVehicleModal = ({ isOpen, onClose, onVehicleAdded }) => {
   const [vehicleIdentifier, setVehicleIdentifier] = useState('')
   const [identifierType, setIdentifierType] = useState('registration') // 'registration' or 'vin'
-  const [showConfirmation, setShowConfirmation] = useState(false)
+  const [step, setStep] = useState('input') // 'input', 'details', 'finalizing'
+  const [vehicleDetails, setVehicleDetails] = useState(null)
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState(null)
 
   const handleInputChange = (e) => {
     setVehicleIdentifier(e.target.value)
   }
 
-  const handleInitialConfirm = () => {
+  const handleSearchVehicle = async () => {
     if (!vehicleIdentifier.trim()) {
       toast.error('Please enter a vehicle identifier')
       return
     }
-    setShowConfirmation(true)
+    
+    setIsLoading(true)
+    setError(null)
+    try {
+      const response = await apiClient.get(
+        `/api/vehicle/lookup`,
+        {
+          params: {
+            [identifierType]: vehicleIdentifier
+          }
+        }
+      )
+
+      if (response.status === 200) {
+        setVehicleDetails(response.data.data)
+        setStep('details')
+      }
+    } catch (err) {
+      console.error('Error fetching vehicle details:', err)
+      const errorMessage = err.response?.data?.message || 'Failed to fetch vehicle details'
+      setError(errorMessage)
+      toast.error(errorMessage)
+    } finally {
+      setIsLoading(false)
+    }
   }
 
-  const handleFinalConfirm = async () => {
+  const handleDetailsConfirmation = async () => {
     setIsLoading(true)
+    setError(null)
+    setStep('finalizing')
     try {
       const payload = {
         [identifierType]: vehicleIdentifier,
+        vehicleDetails: vehicleDetails
       }
 
       const response = await apiClient.post(
@@ -38,10 +67,12 @@ const AddVehicleModal = ({ isOpen, onClose, onVehicleAdded }) => {
         onVehicleAdded()
         resetModal()
       }
-    } catch (error) {
-      console.error('Error adding vehicle:', error)
-      const errorMessage = error.response?.data?.message || 'Failed to add vehicle'
+    } catch (err) {
+      console.error('Error adding vehicle:', err)
+      const errorMessage = err.response?.data?.message || 'Failed to add vehicle'
+      setError(errorMessage)
       toast.error(errorMessage)
+      setStep('details') // Go back to details view on error
     } finally {
       setIsLoading(false)
     }
@@ -50,14 +81,18 @@ const AddVehicleModal = ({ isOpen, onClose, onVehicleAdded }) => {
   const resetModal = () => {
     setVehicleIdentifier('')
     setIdentifierType('registration')
-    setShowConfirmation(false)
+    setStep('input')
+    setVehicleDetails(null)
+    setError(null)
     onClose()
   }
 
   const handleCancel = () => {
     if (isLoading) return // Don't allow closing during requests
-    if (showConfirmation) {
-      setShowConfirmation(false)
+    if (step === 'details') {
+      setStep('input')
+      setVehicleDetails(null)
+      setError(null)
     } else {
       resetModal()
     }
@@ -85,11 +120,14 @@ const AddVehicleModal = ({ isOpen, onClose, onVehicleAdded }) => {
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-gray-200">
             <h2 className="text-2xl font-bold text-gray-900">
-              {showConfirmation ? 'Confirm Addition' : 'Add Vehicle'}
+              {step === 'input' && 'Add Vehicle'}
+              {step === 'details' && 'Confirm Vehicle Details'}
+              {step === 'finalizing' && 'Adding Vehicle...'}
             </h2>
             <button
               onClick={handleCancel}
-              className="p-1 hover:bg-gray-100 rounded-lg transition"
+              disabled={isLoading}
+              className="p-1 hover:bg-gray-100 rounded-lg transition disabled:opacity-50"
             >
               <X className="size-6 text-gray-600" />
             </button>
@@ -97,7 +135,7 @@ const AddVehicleModal = ({ isOpen, onClose, onVehicleAdded }) => {
 
           {/* Content */}
           <div className="p-6">
-            {!showConfirmation ? (
+            {step === 'input' && (
               <>
                 {/* Identifier Type Selection */}
                 <div className="mb-6">
@@ -112,6 +150,7 @@ const AddVehicleModal = ({ isOpen, onClose, onVehicleAdded }) => {
                         value="registration"
                         checked={identifierType === 'registration'}
                         onChange={(e) => setIdentifierType(e.target.value)}
+                        disabled={isLoading}
                         className="w-4 h-4 text-indigo-600"
                       />
                       <span className="ml-2 text-gray-700">Registration Number</span>
@@ -123,6 +162,7 @@ const AddVehicleModal = ({ isOpen, onClose, onVehicleAdded }) => {
                         value="vin"
                         checked={identifierType === 'vin'}
                         onChange={(e) => setIdentifierType(e.target.value)}
+                        disabled={isLoading}
                         className="w-4 h-4 text-indigo-600"
                       />
                       <span className="ml-2 text-gray-700">VIN Number</span>
@@ -139,23 +179,63 @@ const AddVehicleModal = ({ isOpen, onClose, onVehicleAdded }) => {
                     type="text"
                     value={vehicleIdentifier}
                     onChange={handleInputChange}
+                    disabled={isLoading}
                     placeholder={
                       identifierType === 'registration'
                         ? 'e.g., AB21 XYZ'
                         : 'e.g., WVWZZZ3CZ9E123456'
                     }
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition"
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition disabled:bg-gray-100"
                   />
                 </div>
               </>
-            ) : (
-              <div className="text-center">
-                <p className="text-gray-700 mb-2">
-                  Are you sure you want to add this vehicle?
-                </p>
-                <p className="text-indigo-600 font-semibold text-lg">
-                  {vehicleIdentifier}
-                </p>
+            )}
+
+            {step === 'details' && vehicleDetails && (
+              <>
+                <div className="mb-6 space-y-4">
+                  <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                    <h3 className="font-semibold text-gray-900 mb-3">Vehicle Details</h3>
+                    <div className="space-y-2 text-sm">
+                      {vehicleDetails.make && (
+                        <p><span className="font-medium text-gray-700">Make:</span> {vehicleDetails.make}</p>
+                      )}
+                      {vehicleDetails.model && (
+                        <p><span className="font-medium text-gray-700">Model:</span> {vehicleDetails.model}</p>
+                      )}
+                      {vehicleDetails.manufactureDate && (
+                        <p><span className="font-medium text-gray-700">Year:</span> {vehicleDetails.manufactureDate.split('-')[0]}</p>
+                      )}
+                      {vehicleDetails.fuelType && (
+                        <p><span className="font-medium text-gray-700">Fuel Type:</span> {vehicleDetails.fuelType}</p>
+                      )}
+                      {vehicleDetails.primaryColour && (
+                        <p><span className="font-medium text-gray-700">Colour:</span> {vehicleDetails.primaryColour}</p>
+                      )}
+                      {vehicleDetails.registration && (
+                        <p><span className="font-medium text-gray-700">Registration:</span> {vehicleDetails.registration}</p>
+                      )}
+                      {vehicleDetails.engineSize && (
+                        <p><span className="font-medium text-gray-700">Engine Size:</span> {vehicleDetails.engineSize} cc</p>
+                      )}
+                    </div>
+                  </div>
+                  <p className="text-sm text-gray-600">
+                    Is this the correct vehicle? Click confirm to add it to the system.
+                  </p>
+                </div>
+              </>
+            )}
+
+            {step === 'finalizing' && (
+              <div className="text-center py-8">
+                <p className="text-gray-700">Adding vehicle to database...</p>
+              </div>
+            )}
+
+            {error && (
+              <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-sm text-red-700">{error}</p>
               </div>
             )}
           </div>
@@ -164,18 +244,21 @@ const AddVehicleModal = ({ isOpen, onClose, onVehicleAdded }) => {
           <div className="flex gap-3 p-6 border-t border-gray-200">
             <button
               onClick={handleCancel}
-              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition font-medium"
+              disabled={isLoading}
+              className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition font-medium disabled:opacity-50"
             >
-              {showConfirmation ? 'Cancel' : 'Close'}
+              {step === 'input' ? 'Close' : 'Back'}
             </button>
             <button
               onClick={
-                showConfirmation ? handleFinalConfirm : handleInitialConfirm
+                step === 'input' ? handleSearchVehicle : 
+                step === 'details' ? handleDetailsConfirmation : 
+                undefined
               }
-              disabled={isLoading}
+              disabled={isLoading || step === 'finalizing'}
               className="flex-1 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white rounded-lg transition font-medium"
             >
-              {isLoading ? 'Adding...' : showConfirmation ? 'Confirm' : 'Next'}
+              {isLoading ? 'Loading...' : (step === 'input' ? 'Search' : 'Confirm')}
             </button>
           </div>
         </div>
