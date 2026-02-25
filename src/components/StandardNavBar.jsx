@@ -76,7 +76,7 @@ const StandardNavBar = ({ refreshTrigger }) => {
     fetchCompanyStats()
 
     // Set up 10-minute interval for regular refresh
-    const intervalId = setInterval(fetchCompanyStats, 10 * 60 * 1000) // 10 minutes in milliseconds
+    const intervalId = setInterval(fetchCompanyStats, 60 * 60 * 1000) // 60 minutes in milliseconds
 
     // Cleanup interval on unmount
     return () => clearInterval(intervalId)
