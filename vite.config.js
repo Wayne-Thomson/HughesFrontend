@@ -8,7 +8,7 @@ export default defineConfig({
   server: {
     port: 5173,
     host: true,
-    allowedHosts: ['home.backseatfleet.co.uk'],
+    allowedHosts: ['home.backseatfleet.co.uk', 'hughes.backseatfleet.co.uk', 'localhost'],
     proxy: {
       '/api': {
         target: process.env.VITE_API_URL || 'http://localhost:3000',
