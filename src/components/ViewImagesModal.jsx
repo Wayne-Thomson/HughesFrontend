@@ -13,7 +13,7 @@ const ViewImagesModal = ({ isOpen, onClose, vehicle }) => {
   const fileInputRef = useRef(null)
   const cameraInputRef = useRef(null)
 
-  const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
+  const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10MB
 
   useEffect(() => {
     if (isOpen && vehicle) {
