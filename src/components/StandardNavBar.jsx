@@ -14,6 +14,7 @@ const StandardNavBar = ({ refreshTrigger }) => {
   const isOnVehicles = location.pathname === '/vehicles'
   const isOnUsers = location.pathname === '/users'
   const isOnDeleted = location.pathname === '/deleted'
+  const isOnItems = location.pathname === '/items'
 
   // Capitalize first letter of each word
   const capitalizeWords = (str) => {
@@ -142,6 +143,13 @@ const StandardNavBar = ({ refreshTrigger }) => {
               }`}>
                 Deleted Vehicles
               </Link>
+              <Link to="/items" className={`px-4 py-2 rounded-lg border transition-colors whitespace-nowrap min-w-fit ${
+                isOnItems 
+                  ? 'bg-gray-400 text-gray-900 border-gray-400' 
+                  : 'text-gray-700 border-gray-300 hover:bg-gray-300'
+              }`}>
+                Items
+              </Link>
               {isAdmin() && (
                 <Link to="/users" className={`px-4 py-2 rounded-lg border transition-colors whitespace-nowrap min-w-fit ${
                   isOnUsers 
@@ -159,6 +167,13 @@ const StandardNavBar = ({ refreshTrigger }) => {
                 <button onClick={() => window.dispatchEvent(new CustomEvent('openAddVehicleModal'))} className='flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition-colors whitespace-nowrap'>
                   <PlusIcon className='size-5 flex-shrink-0'/>
                   <span>Add Vehicle</span>
+                </button>
+              )}
+
+              {isOnItems && (
+                <button onClick={() => window.dispatchEvent(new CustomEvent('openAddItemModal'))} className='flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition-colors whitespace-nowrap'>
+                  <PlusIcon className='size-5 flex-shrink-0'/>
+                  <span>Add Item</span>
                 </button>
               )}
 
@@ -247,6 +262,17 @@ const StandardNavBar = ({ refreshTrigger }) => {
                   Deleted Vehicles
                 </Link>
                 <Link 
+                  to="/items" 
+                  onClick={closeMenu}
+                  className={`px-4 py-3 rounded-lg border transition-colors text-center ${
+                    isOnItems 
+                      ? 'bg-gray-400 text-gray-900 border-gray-400' 
+                      : 'text-gray-700 border-gray-300 hover:bg-gray-300'
+                  }`}
+                >
+                  Items
+                </Link>
+                <Link 
                   to="/users" 
                   onClick={closeMenu}
                   className={`px-4 py-3 rounded-lg border transition-colors text-center ${
@@ -269,6 +295,20 @@ const StandardNavBar = ({ refreshTrigger }) => {
                   >
                     <PlusIcon className='size-5'/>
                     <span>Add Vehicle</span>
+                  </button>
+                )}
+
+                {/* Add Item Button in Mobile Menu */}
+                {isOnItems && (
+                  <button 
+                    onClick={() => {
+                      window.dispatchEvent(new CustomEvent('openAddItemModal'))
+                      closeMenu()
+                    }}
+                    className='flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-3 rounded-lg transition-colors mt-4'
+                  >
+                    <PlusIcon className='size-5'/>
+                    <span>Add Item</span>
                   </button>
                 )}
 

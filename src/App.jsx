@@ -2,6 +2,7 @@ import './App.css'
 import { Routes, Route } from "react-router";
 import LoginPage from './pages/LoginPage.jsx';
 import VehicleListPage from './pages/VehicleListPage.jsx';
+import ItemsListPage from './pages/ItemsListPage.jsx';
 import UsersPage from './pages/UsersPage.jsx';
 import RemovedVehicleList from './pages/RemovedVehicleList.jsx';
 import ProtectedLayout from './layouts/ProtectedLayout.jsx';
@@ -14,6 +15,7 @@ const App = () => {
         <Route element={<ProtectedLayout />}>
           <Route path="/vehicles" element={<VehicleListPage />} />
           <Route path="/deleted" element={<RemovedVehicleList />} />
+          <Route path="/items" element={<ItemsListPage />} />
           <Route path="/users" element={<UsersPage />} />
         </Route>
       </Routes>
