@@ -198,31 +198,36 @@ const ItemsListPage = () => {
                     </div>
 
                     {/* Layout Toggle */}
-                    <div className="flex gap-1">
-                        <button
-                            onClick={() => setLayoutView('grid')}
-                            className={`px-4 py-2 rounded-lg font-medium flex items-center gap-2 transition-all ${
-                                layoutView === 'grid'
-                                    ? 'bg-indigo-600 text-white'
-                                    : 'bg-white border border-gray-300 text-gray-900 hover:bg-gray-50'
-                            }`}
-                            title="Grid View"
-                        >
-                            <Grid size={20} />
-                            Grid
-                        </button>
-                        <button
-                            onClick={() => setLayoutView('list')}
-                            className={`px-4 py-2 rounded-lg font-medium flex items-center gap-2 transition-all ${
-                                layoutView === 'list'
-                                    ? 'bg-indigo-600 text-white'
-                                    : 'bg-white border border-gray-300 text-gray-900 hover:bg-gray-50'
-                            }`}
-                            title="List View"
-                        >
-                            <List size={20} />
-                            List
-                        </button>
+                    <div className="flex gap-1 md:gap-3 items-center flex-wrap">
+                        <div className="flex gap-1">
+                            <button
+                                onClick={() => setLayoutView('grid')}
+                                className={`px-4 py-2 rounded-lg font-medium flex items-center gap-2 transition-all ${
+                                    layoutView === 'grid'
+                                        ? 'bg-indigo-600 text-white'
+                                        : 'bg-white border border-gray-300 text-gray-900 hover:bg-gray-50'
+                                }`}
+                                title="Grid View"
+                            >
+                                <Grid size={20} />
+                                Grid
+                            </button>
+                            <button
+                                onClick={() => setLayoutView('list')}
+                                className={`px-4 py-2 rounded-lg font-medium flex items-center gap-2 transition-all ${
+                                    layoutView === 'list'
+                                        ? 'bg-indigo-600 text-white'
+                                        : 'bg-white border border-gray-300 text-gray-900 hover:bg-gray-50'
+                                }`}
+                                title="List View"
+                            >
+                                <List size={20} />
+                                List
+                            </button>
+                        </div>
+                        <div className="px-4 py-2 rounded-lg font-medium flex items-center gap-2 bg-gray-100 border border-gray-300 text-gray-900">
+                            Total: <span className="text-indigo-600 font-bold">{filteredItems.length}</span>
+                        </div>
                     </div>
                 </div>
             </div>
